@@ -17,7 +17,7 @@ where
 import Data.Text (Text)
 
 data Magix = HMagix
-  { _haskellPackages :: [Text],
-    _haskellGhcFlags :: [Text]
+  { _haskellPackages :: ![Text],
+    _haskellGhcFlags :: ![Text]
   }
   deriving (Eq, Show)

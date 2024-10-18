@@ -10,7 +10,8 @@
 --
 -- Creation date: Fri Oct 18 10:37:48 2024.
 module Magix.Options
-  ( MagixOptions (..),
+  ( LogLevel (..),
+    MagixOptions (..),
     getMagixOptions,
   )
 where
@@ -18,26 +19,48 @@ where
 import Options.Applicative
   ( Parser,
     ParserInfo,
+    auto,
     execParser,
     fullDesc,
     help,
     helper,
     info,
+    long,
     metavar,
+    option,
     progDesc,
+    short,
     strArgument,
+    value,
   )
 
-newtype MagixOptions = MagixOptions {scriptPath :: FilePath}
+data LogLevel = Info | Debug
+  deriving (Eq, Read, Show)
+
+data MagixOptions = MagixOptions
+  { verbosity :: !LogLevel,
+    scriptPath :: !FilePath
+  }
   deriving (Eq, Show)
 
 pMagixOptions :: Parser MagixOptions
-pMagixOptions = MagixOptions <$> pScriptPath
+pMagixOptions = MagixOptions <$> pLogLevel <*> pScriptPath
 
 pScriptPath :: Parser FilePath
 pScriptPath =
   strArgument
     (metavar "SCRIPT_FILE_PATH" <> help "File path of script to run")
+
+pLogLevel :: Parser LogLevel
+pLogLevel =
+  option
+    auto
+    ( long "verbosity"
+        <> short 'v'
+        <> value Info
+        <> metavar "LOG_LEVEL"
+        <> help "Log level (Info or Debug)"
+    )
 
 desc :: String
 desc = "Run and cache compiled scripts using the Nix package manager"

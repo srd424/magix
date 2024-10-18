@@ -17,10 +17,11 @@ where
 import Magix (MagixOptions (..))
 import Magix.Builder (buildArgs)
 import Magix.Magix (Magix (..))
+import Magix.Options (LogLevel (..))
 import Test.Hspec (Spec, describe, it, shouldBe, shouldContain)
 
 magixOptions :: MagixOptions
-magixOptions = MagixOptions "fakeScriptPath"
+magixOptions = MagixOptions Info "fakeScriptPath"
 
 magix :: Magix
 magix = HMagix ["fake", "packages"] ["fake", "flags"]

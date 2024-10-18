@@ -15,6 +15,7 @@ module Main
 where
 
 import Magix (MagixOptions (..), getDirectives, getMagixOptions, runMagix)
+import Magix.Options (LogLevel (..))
 import System.IO (Handle, stderr)
 import System.Log.Formatter (simpleLogFormatter)
 import System.Log.Handler (setFormatter)
@@ -38,14 +39,17 @@ withFormatter handler = setFormatter handler formatter
 
 main :: IO ()
 main = do
+  opts <- getMagixOptions
+  let prio = case verbosity opts of
+        Info -> INFO
+        Debug -> DEBUG
+
   updateGlobalLogger rootLoggerName removeHandler
-  stderrHandler <- withFormatter <$> streamHandler stderr DEBUG
-  logger <- setHandlers [stderrHandler] . setLevel DEBUG <$> getLogger "Magix.Main"
+  stderrHandler <- withFormatter <$> streamHandler stderr prio
+  logger <- setHandlers [stderrHandler] . setLevel prio <$> getLogger "Magix.Main"
   saveGlobalLogger logger
   let logD = logL logger DEBUG
 
-  logD "Parsing options"
-  opts <- getMagixOptions
   logD $ "Options are " <> show opts
 
   logD "Parsing directives"

@@ -64,7 +64,9 @@ pDirectiveShebang = chunk "#!/usr/bin/env magix" $> ()
 pDirectiveMagix :: Text -> Parser ()
 pDirectiveMagix x = pDirectiveWithValue "magix" (chunk x) $> ()
 
-data HMagixDirective = HMagixHaskellPackages ![Text] | HMagixGhcFlags ![Text]
+data HMagixDirective
+  = HMagixHaskellPackages ![Text]
+  | HMagixGhcFlags ![Text]
 
 pHaskellPackages :: Parser HMagixDirective
 pHaskellPackages = HMagixHaskellPackages <$> try (pDirectiveWithValues "haskellPackages")
