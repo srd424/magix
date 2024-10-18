@@ -51,8 +51,9 @@ common exec
 library
   import:          common, lib
   exposed-modules:
-    Directive
     Magix
+    Magix.Constants
+    Magix.Directives
 
   hs-source-dirs:  src
   other-modules:
@@ -67,19 +68,22 @@ executable magix
   import:          common, exec
   main-is:         Main.hs
   hs-source-dirs:  app
-  other-modules:   Option
+  other-modules:   Options
   autogen-modules:
   ghc-options:
   build-depends:
     , base                  >=4.7 && <5
     , filepath
+    , magix
+    , megaparsec
     , optparse-applicative
+    , text
 
 test-suite test-magix
   import:          common, test
   main-is:         Spec.hs
   hs-source-dirs:  test
-  other-modules:   DirectiveSpec
+  other-modules:   Magix.DirectiveSpec
   autogen-modules:
   ghc-options:
   type:            exitcode-stdio-1.0

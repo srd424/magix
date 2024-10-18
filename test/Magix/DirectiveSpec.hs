@@ -9,15 +9,15 @@
 -- Portability :  portable
 --
 -- Creation date: Fri Oct 18 09:34:01 2024.
-module DirectiveSpec
+module Magix.DirectiveSpec
   ( spec,
   )
 where
 
 import Data.Text (Text)
 import Data.Text.IO (readFile)
-import Directive (pDirectiveMagix, pDirectiveShebang, pMagix)
 import Magix (Magix (..))
+import Magix.Directives (pDirectiveMagix, pDirectiveShebang, pMagix)
 import Test.Hspec (Spec, describe, it, shouldBe)
 import Text.Megaparsec (parse)
 import Prelude hiding (readFile)
@@ -29,7 +29,7 @@ hMagixDirective :: Text
 hMagixDirective = "#!magix haskell"
 
 fnMinimal :: FilePath
-fnMinimal = "test/scripts/minimal"
+fnMinimal = "scripts/minimal"
 
 readMinimal :: IO Text
 readMinimal = readFile fnMinimal

@@ -14,10 +14,22 @@ module Main
   )
 where
 
-import Option (magixOptionsParser)
+import Data.Text.IO (readFile)
+import Magix.Directives (pMagix)
+import Options (MagixOptions (scriptFilePath), magixOptionsParser)
 import Options.Applicative (execParser)
+import System.OsPath (decodeUtf)
+import Text.Megaparsec (errorBundlePretty, parse)
+import Prelude hiding (readFile)
 
 main :: IO ()
 main = do
   opts <- execParser magixOptionsParser
   print opts
+  let script = scriptFilePath opts
+  path <- decodeUtf script
+  contents <- readFile path
+  let magix =
+        either (error . errorBundlePretty) id $
+          parse pMagix path contents
+  print magix

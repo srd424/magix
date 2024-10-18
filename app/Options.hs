@@ -1,5 +1,5 @@
 -- |
--- Module      :  Option
+-- Module      :  Options
 -- Description :  Magical options
 -- Copyright   :  2024 Dominik Schrempf
 -- License     :  GPL-3.0-or-later
@@ -9,12 +9,13 @@
 -- Portability :  portable
 --
 -- Creation date: Fri Oct 18 10:37:48 2024.
-module Option
+module Options
   ( MagixOptions (..),
     magixOptionsParser,
   )
 where
 
+import Data.Bifunctor (Bifunctor (..))
 import Options.Applicative
   ( Parser,
     ParserInfo,
@@ -29,19 +30,17 @@ import Options.Applicative
   )
 import System.OsPath (OsPath, encodeUtf)
 
-newtype MagixOptions = MagixOptions {scriptName :: OsPath}
+newtype MagixOptions = MagixOptions {scriptFilePath :: OsPath}
   deriving (Eq, Show)
 
 pMagixOptions :: Parser MagixOptions
-pMagixOptions = MagixOptions <$> pScriptName
+pMagixOptions = MagixOptions <$> pScriptFilePath
 
 readPath :: String -> Either String OsPath
-readPath x = case encodeUtf x of
-  Left err -> Left $ show err
-  Right p -> Right p
+readPath x = first show $ encodeUtf x
 
-pScriptName :: Parser OsPath
-pScriptName =
+pScriptFilePath :: Parser OsPath
+pScriptFilePath =
   argument
     (eitherReader readPath)
     (metavar "SCRIPT_FILE_PATH" <> help "File path of script to run")
