@@ -14,4 +14,7 @@ module Magix
   )
 where
 
-data Magix = HMagix
+import Data.Text (Text)
+
+newtype Magix = HMagix {haskellPackages :: [Text]}
+  deriving (Eq, Show)

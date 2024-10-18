@@ -15,15 +15,36 @@ module DirectiveSpec
 where
 
 import Data.Text (Text)
-import Directive (pShebang)
+import Data.Text.IO (readFile)
+import Directive (pDirectiveMagix, pDirectiveShebang, pMagix)
+import Magix (Magix (..))
 import Test.Hspec (Spec, describe, it, shouldBe)
 import Text.Megaparsec (parse)
+import Prelude hiding (readFile)
 
 magixShebang :: Text
 magixShebang = "#!/usr/bin/env magix"
 
+hMagixDirective :: Text
+hMagixDirective = "#!magix haskell"
+
+fnMinimal :: FilePath
+fnMinimal = "test/scripts/minimal"
+
+readMinimal :: IO Text
+readMinimal = readFile fnMinimal
+
 spec :: Spec
 spec = do
-  describe "pShebang" $ do
+  describe "pDirectiveShebang" $ do
     it "parses the shebang" $
-      parse pShebang "" magixShebang `shouldBe` Right ()
+      parse pDirectiveShebang "" magixShebang `shouldBe` Right ()
+
+  describe "pDirectiveMagix" $ do
+    it "parses a sample Magix directive" $
+      parse (pDirectiveMagix "haskell") "" hMagixDirective `shouldBe` Right ()
+
+  describe "pMagix" $ do
+    it "parses s sample script" $ do
+      minimal <- readMinimal
+      parse pMagix fnMinimal minimal `shouldBe` Right (HMagix ["bytestring"])
