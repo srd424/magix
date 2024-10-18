@@ -15,8 +15,8 @@ module Main
 where
 
 import Data.Text.IO (readFile)
-import Magix (Magix)
 import Magix.Directives (pMagix)
+import Magix.Magix (Magix)
 import Magix.Options (MagixOptions (scriptFilePath), getMagixOptions)
 import System.IO (Handle, stderr)
 import System.Log.Formatter (simpleLogFormatter)

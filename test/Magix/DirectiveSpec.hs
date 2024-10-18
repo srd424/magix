@@ -16,8 +16,8 @@ where
 
 import Data.Text (Text)
 import Data.Text.IO (readFile)
-import Magix (Magix (..))
 import Magix.Directives (pDirectiveMagix, pDirectiveShebang, pMagix)
+import Magix.Magix (Magix (..))
 import Test.Hspec (Spec, describe, it, shouldBe)
 import Text.Megaparsec (parse)
 import Prelude hiding (readFile)
@@ -29,7 +29,7 @@ hMagixDirective :: Text
 hMagixDirective = "#!magix haskell"
 
 fnMinimal :: FilePath
-fnMinimal = "scripts/minimal"
+fnMinimal = "test-scripts/minimal"
 
 readMinimal :: IO Text
 readMinimal = readFile fnMinimal

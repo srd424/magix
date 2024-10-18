@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+cabal clean
+cabal build all
+cabal test
+cabal run magix -- test-scripts/minimal

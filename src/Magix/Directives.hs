@@ -19,7 +19,7 @@ where
 import Data.Functor (($>))
 import Data.Text (Text, pack)
 import Data.Void (Void)
-import Magix (Magix (..))
+import Magix.Magix (Magix (..))
 import Text.Megaparsec
   ( MonadParsec (try),
     Parsec,

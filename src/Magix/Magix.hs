@@ -9,7 +9,7 @@
 -- Portability :  portable
 --
 -- Creation date: Fri Oct 18 09:12:29 2024.
-module Magix
+module Magix.Magix
   ( Magix (..),
   )
 where

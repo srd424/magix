@@ -55,6 +55,10 @@
             buildInputs = [ ];
             doBenchmark = true;
             withHoogle = true;
+
+            shellHook = ''
+              export PATH="$PWD/scripts:$PATH"
+            '';
           };
         };
     in

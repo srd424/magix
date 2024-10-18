@@ -10,3 +10,5 @@
 --
 -- Creation date: Fri Oct 18 13:36:32 2024.
 module Magix.Build () where
+
+-- nix-script --build-command 'mv $SRC $SRC.hs; ghc -threaded -o $OUT $SRC.hs' --build-input 'haskellPackages.ghcWithPackages (ps: with ps; [ containers text turtle ])' /home/dominik/bin/nix/nix-run-rofi

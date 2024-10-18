@@ -51,9 +51,9 @@ common exec
 library
   import:          common, lib
   exposed-modules:
-    Magix
     Magix.Build
     Magix.Directives
+    Magix.Magix
     Magix.Options
 
   hs-source-dirs:  src
