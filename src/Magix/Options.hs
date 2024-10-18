@@ -1,5 +1,5 @@
 -- |
--- Module      :  Options
+-- Module      :  Magix.Options
 -- Description :  Magical options
 -- Copyright   :  2024 Dominik Schrempf
 -- License     :  GPL-3.0-or-later
@@ -9,9 +9,9 @@
 -- Portability :  portable
 --
 -- Creation date: Fri Oct 18 10:37:48 2024.
-module Options
+module Magix.Options
   ( MagixOptions (..),
-    magixOptionsParser,
+    getMagixOptions,
   )
 where
 
@@ -21,6 +21,7 @@ import Options.Applicative
     ParserInfo,
     argument,
     eitherReader,
+    execParser,
     fullDesc,
     help,
     helper,
@@ -50,3 +51,6 @@ desc = "Run and cache compiled scripts using the Nix package manager"
 
 magixOptionsParser :: ParserInfo MagixOptions
 magixOptionsParser = info (helper <*> pMagixOptions) (fullDesc <> progDesc desc)
+
+getMagixOptions :: IO MagixOptions
+getMagixOptions = execParser magixOptionsParser
