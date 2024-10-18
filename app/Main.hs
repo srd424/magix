@@ -14,5 +14,10 @@ module Main
   )
 where
 
+import Option (magixOptionsParser)
+import Options.Applicative (execParser)
+
 main :: IO ()
-main = undefined
+main = do
+  opts <- execParser magixOptionsParser
+  print opts

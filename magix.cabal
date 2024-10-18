@@ -67,10 +67,13 @@ executable magix
   import:          common, exec
   main-is:         Main.hs
   hs-source-dirs:  app
-  other-modules:
+  other-modules:   Option
   autogen-modules:
   ghc-options:
-  build-depends:   base >=4.7 && <5
+  build-depends:
+    , base                  >=4.7 && <5
+    , filepath
+    , optparse-applicative
 
 test-suite test-magix
   import:          common, test
