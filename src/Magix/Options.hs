@@ -28,14 +28,14 @@ import Options.Applicative
     strArgument,
   )
 
-newtype MagixOptions = MagixOptions {scriptFilePath :: FilePath}
+newtype MagixOptions = MagixOptions {scriptPath :: FilePath}
   deriving (Eq, Show)
 
 pMagixOptions :: Parser MagixOptions
-pMagixOptions = MagixOptions <$> pScriptFilePath
+pMagixOptions = MagixOptions <$> pScriptPath
 
-pScriptFilePath :: Parser FilePath
-pScriptFilePath =
+pScriptPath :: Parser FilePath
+pScriptPath =
   strArgument
     (metavar "SCRIPT_FILE_PATH" <> help "File path of script to run")
 

@@ -85,7 +85,10 @@ test-suite test-magix
   import:          common, test
   main-is:         Spec.hs
   hs-source-dirs:  test
-  other-modules:   Magix.DirectiveSpec
+  other-modules:
+    Magix.BuilderSpec
+    Magix.DirectivesSpec
+
   autogen-modules:
   ghc-options:
   type:            exitcode-stdio-1.0

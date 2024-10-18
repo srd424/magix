@@ -13,15 +13,15 @@ module Magix.Builder (buildArgs) where
 
 import Data.Text (Text, unpack, unwords)
 import Magix.Magix (Magix (HMagix))
-import Magix.Options (MagixOptions (scriptFilePath))
+import Magix.Options (MagixOptions (scriptPath))
 import Prelude hiding (unwords)
 
 buildArgs :: MagixOptions -> Magix -> [String]
-buildArgs o (HMagix ps) =
+buildArgs o (HMagix ps fs) =
   map unpack (buildCommandArgs ++ buildInputArgs)
-    ++ [scriptFilePath o]
+    ++ [scriptPath o]
   where
-    buildCommandArgs = ["--build-command", getBuildCommand []]
+    buildCommandArgs = ["--build-command", getBuildCommand fs]
     buildInputArgs = ["--build-input", getBuildInput ps]
 
 -- 'mv $SRC $SRC.hs; ghc -threaded -o $OUT $SRC.hs'

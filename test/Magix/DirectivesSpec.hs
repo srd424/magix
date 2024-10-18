@@ -1,5 +1,5 @@
 -- |
--- Module      :  DirectiveSpec
+-- Module      :  DirectivesSpec
 -- Description :  Unit tests for Directive
 -- Copyright   :  2024 Dominik Schrempf
 -- License     :  GPL-3.0-or-later
@@ -9,7 +9,7 @@
 -- Portability :  portable
 --
 -- Creation date: Fri Oct 18 09:34:01 2024.
-module Magix.DirectiveSpec
+module Magix.DirectivesSpec
   ( spec,
   )
 where
@@ -34,6 +34,12 @@ fnMinimal = "test-scripts/minimal"
 readMinimal :: IO Text
 readMinimal = readFile fnMinimal
 
+fnMultiple :: FilePath
+fnMultiple = "test-scripts/multiple"
+
+readMultiple :: IO Text
+readMultiple = readFile fnMultiple
+
 spec :: Spec
 spec = do
   describe "pDirectiveShebang" $ do
@@ -45,6 +51,12 @@ spec = do
       parse (pDirectiveMagix "haskell") "" hMagixDirective `shouldBe` Right ()
 
   describe "pMagix" $ do
-    it "parses s sample script" $ do
+    it "parses a minimal sample script" $ do
       minimal <- readMinimal
-      parse pMagix fnMinimal minimal `shouldBe` Right (HMagix ["bytestring"])
+      parse pMagix fnMinimal minimal `shouldBe` Right (HMagix ["bytestring"] ["-threaded"])
+
+  describe "pMagix" $ do
+    it "parses a more interesting sample script with multiple directives" $ do
+      multiple <- readMultiple
+      parse pMagix fnMultiple multiple
+        `shouldBe` Right (HMagix ["a", "b", "c", "d", "e", "f"] ["1", "2", "3", "4"])

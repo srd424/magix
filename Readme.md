@@ -12,8 +12,3 @@ simple and stupid. Magix is a tiny wrapper around `nix-script`.
 
 -   Log level directive
 
-
-## HMagix
-
--   `haskellGhcFlags` directive
-

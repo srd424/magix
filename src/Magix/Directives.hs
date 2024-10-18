@@ -17,22 +17,31 @@ module Magix.Directives
   )
 where
 
+import Control.Applicative (Alternative (..))
+import Data.Foldable (Foldable (..))
 import Data.Functor (($>))
 import Data.Text (Text, pack)
 import Data.Text.IO (readFile)
 import Data.Void (Void)
 import Magix.Magix (Magix (..))
 import Text.Megaparsec
-  ( MonadParsec (try),
+  ( MonadParsec (notFollowedBy),
     Parsec,
     chunk,
     errorBundlePretty,
     parse,
     sepBy1,
     sepEndBy,
-    some,
+    try,
   )
-import Text.Megaparsec.Char (alphaNumChar, hspace, space1)
+import Text.Megaparsec.Char
+  ( alphaNumChar,
+    hspace,
+    newline,
+    punctuationChar,
+    space1,
+    symbolChar,
+  )
 import Prelude hiding (readFile)
 
 type Parser = Parsec Void Text
@@ -41,7 +50,7 @@ pDirective :: Text -> Parser ()
 pDirective d = chunk "#!" *> chunk d $> ()
 
 pValue :: Parser Text
-pValue = pack <$> some alphaNumChar
+pValue = pack <$> some (alphaNumChar <|> punctuationChar <|> symbolChar)
 
 pDirectiveWithValue :: Text -> Parser a -> Parser a
 pDirectiveWithValue d p = pDirective d *> hspace *> p
@@ -55,15 +64,32 @@ pDirectiveShebang = chunk "#!/usr/bin/env magix" $> ()
 pDirectiveMagix :: Text -> Parser ()
 pDirectiveMagix x = pDirectiveWithValue "magix" (chunk x) $> ()
 
-pMagix :: Parser Magix
-pMagix = pDirectiveShebang *> space1 *> pHMagix
+data HMagixDirective = HMagixHaskellPackages ![Text] | HMagixGhcFlags ![Text]
+
+pHaskellPackages :: Parser HMagixDirective
+pHaskellPackages = HMagixHaskellPackages <$> try (pDirectiveWithValues "haskellPackages")
+
+pHaskellGhcFlags :: Parser HMagixDirective
+pHaskellGhcFlags = HMagixGhcFlags <$> try (pDirectiveWithValues "haskellGhcFlags")
+
+pHMagixDirective :: Parser HMagixDirective
+pHMagixDirective = pHaskellPackages <|> pHaskellGhcFlags
+
+addHMagixDirective :: Magix -> HMagixDirective -> Magix
+addHMagixDirective (HMagix ps fs) (HMagixHaskellPackages ps') = HMagix (ps <> ps') fs
+addHMagixDirective (HMagix ps fs) (HMagixGhcFlags fs') = HMagix ps (fs <> fs')
 
 pHMagix :: Parser Magix
 pHMagix = do
   pDirectiveMagix "haskell"
   space1
-  pss <- sepEndBy (try $ pDirectiveWithValues "haskellPackages") space1
-  pure $ HMagix $ concat pss
+  ds <- sepEndBy pHMagixDirective newline
+  notFollowedBy $ chunk "#!"
+  let magix = foldl' addHMagixDirective (HMagix [] []) ds
+  pure magix
+
+pMagix :: Parser Magix
+pMagix = pDirectiveShebang *> space1 *> pHMagix
 
 getDirectives :: FilePath -> IO Magix
 getDirectives x = do

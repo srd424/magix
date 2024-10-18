@@ -1,0 +1,15 @@
+#!/usr/bin/env magix
+#!magix haskell
+#!haskellPackages a
+#!haskellPackages b c
+#!haskellGhcFlags 1
+#!haskellPackages d e f
+#!haskellGhcFlags 2
+#!haskellGhcFlags 3 4
+
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.ByteString qualified as BS
+
+main :: IO ()
+main = BS.putStr "Hello, multiple World!\n"

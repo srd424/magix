@@ -49,7 +49,7 @@ main = do
   logD $ "Options are " <> show opts
 
   logD "Parsing directives"
-  magix <- getDirectives $ scriptFilePath opts
+  magix <- getDirectives $ scriptPath opts
   logD $ "Directives are " <> show magix
 
   logD "Running script"
