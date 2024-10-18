@@ -51,7 +51,7 @@ common exec
 library
   import:          common, lib
   exposed-modules:
-    Magix.Build
+    Magix.Builder
     Magix.Directives
     Magix.Magix
     Magix.Options

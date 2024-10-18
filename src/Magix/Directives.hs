@@ -47,11 +47,11 @@ pDirectiveWithValues d = pDirectiveWithValue d (sepBy1 pValue hspace)
 pDirectiveShebang :: Parser ()
 pDirectiveShebang = chunk "#!/usr/bin/env magix" $> ()
 
-pMagix :: Parser Magix
-pMagix = pDirectiveShebang *> space1 *> pHMagix
-
 pDirectiveMagix :: Text -> Parser ()
 pDirectiveMagix x = pDirectiveWithValue "magix" (chunk x) $> ()
+
+pMagix :: Parser Magix
+pMagix = pDirectiveShebang *> space1 *> pHMagix
 
 pHMagix :: Parser Magix
 pHMagix = do
