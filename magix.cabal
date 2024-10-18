@@ -51,10 +51,12 @@ common exec
 library
   import:          common, lib
   exposed-modules:
+    Magix
     Magix.Builder
     Magix.Directives
     Magix.Magix
     Magix.Options
+    Magix.Run
 
   hs-source-dirs:  src
   other-modules:
@@ -62,9 +64,9 @@ library
   ghc-options:
   build-depends:
     , base                  >=4.7 && <5
-    , filepath
     , megaparsec
     , optparse-applicative
+    , process
     , text
 
 executable magix
@@ -75,12 +77,9 @@ executable magix
   autogen-modules:
   ghc-options:
   build-depends:
-    , base        >=4.7 && <5
-    , filepath
+    , base      >=4.7 && <5
     , hslogger
     , magix
-    , megaparsec
-    , text
 
 test-suite test-magix
   import:          common, test

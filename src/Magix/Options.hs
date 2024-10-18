@@ -15,12 +15,9 @@ module Magix.Options
   )
 where
 
-import Data.Bifunctor (Bifunctor (..))
 import Options.Applicative
   ( Parser,
     ParserInfo,
-    argument,
-    eitherReader,
     execParser,
     fullDesc,
     help,
@@ -28,22 +25,18 @@ import Options.Applicative
     info,
     metavar,
     progDesc,
+    strArgument,
   )
-import System.OsPath (OsPath, encodeUtf)
 
-newtype MagixOptions = MagixOptions {scriptFilePath :: OsPath}
+newtype MagixOptions = MagixOptions {scriptFilePath :: FilePath}
   deriving (Eq, Show)
 
 pMagixOptions :: Parser MagixOptions
 pMagixOptions = MagixOptions <$> pScriptFilePath
 
-readPath :: String -> Either String OsPath
-readPath x = first show $ encodeUtf x
-
-pScriptFilePath :: Parser OsPath
+pScriptFilePath :: Parser FilePath
 pScriptFilePath =
-  argument
-    (eitherReader readPath)
+  strArgument
     (metavar "SCRIPT_FILE_PATH" <> help "File path of script to run")
 
 desc :: String

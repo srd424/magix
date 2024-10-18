@@ -13,22 +13,27 @@ module Magix.Directives
   ( pDirectiveShebang,
     pDirectiveMagix,
     pMagix,
+    getDirectives,
   )
 where
 
 import Data.Functor (($>))
 import Data.Text (Text, pack)
+import Data.Text.IO (readFile)
 import Data.Void (Void)
 import Magix.Magix (Magix (..))
 import Text.Megaparsec
   ( MonadParsec (try),
     Parsec,
     chunk,
+    errorBundlePretty,
+    parse,
     sepBy1,
     sepEndBy,
     some,
   )
 import Text.Megaparsec.Char (alphaNumChar, hspace, space1)
+import Prelude hiding (readFile)
 
 type Parser = Parsec Void Text
 
@@ -59,3 +64,9 @@ pHMagix = do
   space1
   pss <- sepEndBy (try $ pDirectiveWithValues "haskellPackages") space1
   pure $ HMagix $ concat pss
+
+getDirectives :: FilePath -> IO Magix
+getDirectives x = do
+  contents <- readFile x
+  let magix = either (error . errorBundlePretty) id $ parse pMagix x contents
+  pure magix

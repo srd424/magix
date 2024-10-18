@@ -9,12 +9,31 @@
 -- Portability :  portable
 --
 -- Creation date: Fri Oct 18 13:36:32 2024.
-module Magix.Builder (build) where
+module Magix.Builder (buildArgs) where
 
-import Magix.Magix (Magix)
-import Magix.Options (MagixOptions)
+import Data.Text (Text, unpack, unwords)
+import Magix.Magix (Magix (HMagix))
+import Magix.Options (MagixOptions (scriptFilePath))
+import Prelude hiding (unwords)
 
-build :: MagixOptions -> Magix
-build = undefined
+buildArgs :: MagixOptions -> Magix -> [String]
+buildArgs o (HMagix ps) =
+  map unpack (buildCommandArgs ++ buildInputArgs)
+    ++ [scriptFilePath o]
+  where
+    buildCommandArgs = ["--build-command", getBuildCommand []]
+    buildInputArgs = ["--build-input", getBuildInput ps]
 
--- nix-script --build-command 'mv $SRC $SRC.hs; ghc -threaded -o $OUT $SRC.hs' --build-input 'haskellPackages.ghcWithPackages (ps: with ps; [ containers text turtle ])' /home/dominik/bin/nix/nix-run-rofi
+-- 'mv $SRC $SRC.hs; ghc -threaded -o $OUT $SRC.hs'
+getBuildCommand :: [Text] -> Text
+getBuildCommand ghcFlags =
+  "mv $SRC $SRC.hs; ghc "
+    <> unwords ghcFlags
+    <> " -o $OUT $SRC.hs"
+
+-- 'haskellPackages.ghcWithPackages (ps: with ps; [ containers text turtle ])'
+getBuildInput :: [Text] -> Text
+getBuildInput haskellPackages =
+  "haskellPackages.ghcWithPackages (ps: with ps; [ "
+    <> unwords haskellPackages
+    <> " ])"
