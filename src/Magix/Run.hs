@@ -14,13 +14,12 @@ module Magix.Run
   )
 where
 
-import Control.Monad (void)
 import Magix.Builder (buildArgs)
 import Magix.Magix (Magix)
 import Magix.Options (MagixOptions)
-import System.Process (readProcess)
+import System.Process (callProcess)
 
 runMagix :: MagixOptions -> Magix -> IO ()
-runMagix o m = void $ readProcess "nix-script" args ""
+runMagix o m = callProcess "nix-script" args
   where
     args = buildArgs o m

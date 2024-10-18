@@ -14,7 +14,7 @@ module Main
   )
 where
 
-import Magix (MagixOptions (..), getDirectives, getMagixOptions)
+import Magix (MagixOptions (..), getDirectives, getMagixOptions, runMagix)
 import System.IO (Handle, stderr)
 import System.Log.Formatter (simpleLogFormatter)
 import System.Log.Handler (setFormatter)
@@ -51,3 +51,7 @@ main = do
   logD "Parsing directives"
   magix <- getDirectives $ scriptFilePath opts
   logD $ "Directives are " <> show magix
+
+  logD "Running script"
+  runMagix opts magix
+  logD "Done"

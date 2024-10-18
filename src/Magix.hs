@@ -13,8 +13,10 @@ module Magix
   ( getDirectives,
     getMagixOptions,
     MagixOptions (..),
+    runMagix,
   )
 where
 
 import Magix.Directives (getDirectives)
 import Magix.Options (MagixOptions (..), getMagixOptions)
+import Magix.Run (runMagix)
