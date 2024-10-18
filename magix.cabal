@@ -52,7 +52,6 @@ library
   import:          common, lib
   exposed-modules:
     Magix
-    Magix.Constants
     Magix.Directives
 
   hs-source-dirs:  src
@@ -74,6 +73,7 @@ executable magix
   build-depends:
     , base                  >=4.7 && <5
     , filepath
+    , hslogger
     , magix
     , megaparsec
     , optparse-applicative

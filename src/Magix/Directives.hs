@@ -20,7 +20,6 @@ import Data.Functor (($>))
 import Data.Text (Text, pack)
 import Data.Void (Void)
 import Magix (Magix (..))
-import Magix.Constants (programName)
 import Text.Megaparsec
   ( MonadParsec (try),
     Parsec,
@@ -46,7 +45,7 @@ pDirectiveWithValues :: Text -> Parser [Text]
 pDirectiveWithValues d = pDirectiveWithValue d (sepBy1 pValue hspace)
 
 pDirectiveShebang :: Parser ()
-pDirectiveShebang = chunk ("#!/usr/bin/env " <> programName) $> ()
+pDirectiveShebang = chunk "#!/usr/bin/env magix" $> ()
 
 pMagix :: Parser Magix
 pMagix = pDirectiveShebang *> space1 *> pHMagix
