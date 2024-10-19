@@ -54,6 +54,7 @@ library
     Magix
     Magix.Builder
     Magix.Directives
+    Magix.Haskell.Builder
     Magix.Magix
     Magix.Options
 
