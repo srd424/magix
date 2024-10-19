@@ -12,12 +12,12 @@
 module Magix.Haskell.Builder (buildHaskellArgs) where
 
 import Data.Text (Text, unpack, unwords)
-import Magix.Magix (Magix (HMagix))
-import Magix.Options (MagixOptions (scriptPath))
+import Magix.Haskell.Directives (HaskellMagix (..))
+import Magix.Options (MagixOptions (..))
 import Prelude hiding (unwords)
 
-buildHaskellArgs :: MagixOptions -> Magix -> [String]
-buildHaskellArgs o (HMagix ps fs) =
+buildHaskellArgs :: MagixOptions -> HaskellMagix -> [String]
+buildHaskellArgs o (HaskellMagix ps fs) =
   map unpack (buildCommandArgs ++ buildInputArgs)
     ++ [scriptPath o]
   where

@@ -14,10 +14,7 @@ module Magix.Magix
   )
 where
 
-import Data.Text (Text)
+import Magix.Haskell.Directives (HaskellMagix)
 
-data Magix = HMagix
-  { _haskellPackages :: ![Text],
-    _haskellGhcFlags :: ![Text]
-  }
+newtype Magix = MHaskellMagix HaskellMagix
   deriving (Eq, Show)

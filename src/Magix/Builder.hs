@@ -12,9 +12,9 @@
 module Magix.Builder (buildArgs) where
 
 import Magix.Haskell.Builder (buildHaskellArgs)
-import Magix.Magix (Magix (HMagix))
+import Magix.Magix (Magix (..))
 import Magix.Options (MagixOptions)
 import Prelude hiding (unwords)
 
 buildArgs :: MagixOptions -> Magix -> [String]
-buildArgs o m@(HMagix _ _) = buildHaskellArgs o m
+buildArgs o (MHaskellMagix x) = buildHaskellArgs o x
