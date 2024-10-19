@@ -1,6 +1,6 @@
 -- |
 -- Module      :  Magix.Haskell.Builder
--- Description :  Build `nix-script` command lines for Haskell scripts
+-- Description :  Build Haskell command lines
 -- Copyright   :  2024 Dominik Schrempf
 -- License     :  GPL-3.0-or-later
 --

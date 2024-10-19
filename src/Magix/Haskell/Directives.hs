@@ -29,30 +29,30 @@ data HaskellMagix = HaskellMagix
   }
   deriving (Eq, Show)
 
-data HaskellMagixDirective
-  = HaskellMagixHaskellPackages ![Text]
-  | HaskellMagixGhcFlags ![Text]
+data HaskellDirective
+  = HaskellPackages ![Text]
+  | HaskellGhcFlags ![Text]
 
-pHaskellPackages :: Parser HaskellMagixDirective
-pHaskellPackages = HaskellMagixHaskellPackages <$> try (pDirectiveWithValues "haskellPackages")
+pHaskellPackages :: Parser HaskellDirective
+pHaskellPackages = HaskellPackages <$> try (pDirectiveWithValues "haskellPackages")
 
-pHaskellGhcFlags :: Parser HaskellMagixDirective
-pHaskellGhcFlags = HaskellMagixGhcFlags <$> try (pDirectiveWithValues "haskellGhcFlags")
+pHaskellGhcFlags :: Parser HaskellDirective
+pHaskellGhcFlags = HaskellGhcFlags <$> try (pDirectiveWithValues "haskellGhcFlags")
 
-pHaskellMagixDirective :: Parser HaskellMagixDirective
-pHaskellMagixDirective = pHaskellPackages <|> pHaskellGhcFlags
+pHaskellDirective :: Parser HaskellDirective
+pHaskellDirective = pHaskellPackages <|> pHaskellGhcFlags
 
-addHaskellMagixDirective :: HaskellMagix -> HaskellMagixDirective -> HaskellMagix
-addHaskellMagixDirective (HaskellMagix ps fs) (HaskellMagixHaskellPackages ps') =
+addHaskellDirective :: HaskellMagix -> HaskellDirective -> HaskellMagix
+addHaskellDirective (HaskellMagix ps fs) (HaskellPackages ps') =
   HaskellMagix (ps <> ps') fs
-addHaskellMagixDirective (HaskellMagix ps fs) (HaskellMagixGhcFlags fs') =
+addHaskellDirective (HaskellMagix ps fs) (HaskellGhcFlags fs') =
   HaskellMagix ps (fs <> fs')
 
 pHaskellMagix :: Parser HaskellMagix
 pHaskellMagix = do
   pMagixDirective "haskell"
   space1
-  ds <- sepEndBy pHaskellMagixDirective newline
+  ds <- sepEndBy pHaskellDirective newline
   notFollowedBy $ chunk "#!"
-  let magix = foldl' addHaskellMagixDirective (HaskellMagix [] []) ds
+  let magix = foldl' addHaskellDirective (HaskellMagix [] []) ds
   pure magix

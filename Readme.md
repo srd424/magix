@@ -8,6 +8,5 @@ simple and stupid. Magix is a tiny wrapper around `nix-script`.
 # Ideas
 
 -   Clean.
--   Refactor (separate HMagix module so that other languages can be added faster).
 -   Bash with runtime dependencies.
 

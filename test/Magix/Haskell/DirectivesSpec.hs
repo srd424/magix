@@ -1,6 +1,6 @@
 -- |
 -- Module      :  Magix.Haskell.DirectivesSpec
--- Description :  Unit tests for Directive
+-- Description :  Tests for parsing Haskell directives
 -- Copyright   :  2024 Dominik Schrempf
 -- License     :  GPL-3.0-or-later
 --

@@ -1,6 +1,6 @@
 -- |
 -- Module      :  Magix.Haskell.BuilderSpec
--- Description :  Unit tests for BuilderSpec
+-- Description :  Tests for building Haskell command lines
 -- Copyright   :  2024 Dominik Schrempf
 -- License     :  GPL-3.0-or-later
 --
