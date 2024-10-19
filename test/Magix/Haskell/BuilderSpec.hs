@@ -1,5 +1,5 @@
 -- |
--- Module      :  Magix.BuilderSpec
+-- Module      :  Magix.Haskell.BuilderSpec
 -- Description :  Unit tests for BuilderSpec
 -- Copyright   :  2024 Dominik Schrempf
 -- License     :  GPL-3.0-or-later
@@ -9,28 +9,28 @@
 -- Portability :  portable
 --
 -- Creation date: Fri Oct 18 15:52:10 2024.
-module Magix.BuilderSpec
+module Magix.Haskell.BuilderSpec
   ( spec,
   )
 where
 
 import Magix (MagixOptions (..))
-import Magix.Builder (buildArgs)
-import Magix.Magix (Magix (..))
+import Magix.Haskell.Builder (buildHaskellArgs)
+import Magix.Haskell.Directives (HaskellMagix (..))
 import Magix.Options (LogLevel (..))
 import Test.Hspec (Spec, describe, it, shouldBe, shouldContain)
 
 magixOptions :: MagixOptions
 magixOptions = MagixOptions Info "fakeScriptPath"
 
-magix :: Magix
-magix = HMagix ["fake", "packages"] ["fake", "flags"]
+magix :: HaskellMagix
+magix = HaskellMagix ["fake", "packages"] ["fake", "flags"]
 
 spec :: Spec
 spec = do
-  describe "buildArgs" $ do
+  describe "buildHaskellArgs" $ do
     it "works correctly for some sample data" $ do
-      let args = buildArgs magixOptions magix
+      let args = buildHaskellArgs magixOptions magix
       length args `shouldBe` 5
       args `shouldContain` ["--build-command"]
       args `shouldContain` ["--build-input"]

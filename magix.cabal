@@ -88,8 +88,10 @@ test-suite test-magix
   main-is:         Spec.hs
   hs-source-dirs:  test
   other-modules:
-    Magix.BuilderSpec
+    Magix.Directives.CommonSpec
     Magix.DirectivesSpec
+    Magix.Haskell.BuilderSpec
+    Magix.Haskell.DirectivesSpec
 
   autogen-modules:
   ghc-options:
