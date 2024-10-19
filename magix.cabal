@@ -56,7 +56,6 @@ library
     Magix.Directives
     Magix.Magix
     Magix.Options
-    Magix.Run
 
   hs-source-dirs:  src
   other-modules:
@@ -66,7 +65,6 @@ library
     , base                  >=4.7 && <5
     , megaparsec
     , optparse-applicative
-    , process
     , text
 
 executable magix
@@ -80,6 +78,7 @@ executable magix
     , base      >=4.7 && <5
     , hslogger
     , magix
+    , process
 
 test-suite test-magix
   import:          common, test

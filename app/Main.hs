@@ -14,7 +14,7 @@ module Main
   )
 where
 
-import Magix (MagixOptions (..), getDirectives, getMagixOptions, runMagix)
+import Magix (MagixOptions (..), buildArgs, getDirectives, getMagixOptions)
 import Magix.Options (LogLevel (..))
 import System.IO (Handle, stderr)
 import System.Log.Formatter (simpleLogFormatter)
@@ -31,6 +31,7 @@ import System.Log.Logger
     setLevel,
     updateGlobalLogger,
   )
+import System.Process (callProcess)
 
 withFormatter :: GenericHandler Handle -> GenericHandler Handle
 withFormatter handler = setFormatter handler formatter
@@ -40,10 +41,10 @@ withFormatter handler = setFormatter handler formatter
 main :: IO ()
 main = do
   opts <- getMagixOptions
+
   let prio = case verbosity opts of
         Info -> INFO
         Debug -> DEBUG
-
   updateGlobalLogger rootLoggerName removeHandler
   stderrHandler <- withFormatter <$> streamHandler stderr prio
   logger <- setHandlers [stderrHandler] . setLevel prio <$> getLogger "Magix.Main"
@@ -56,6 +57,10 @@ main = do
   magix <- getDirectives $ scriptPath opts
   logD $ "Directives are " <> show magix
 
-  logD "Running script"
-  runMagix opts magix
+  logD "Building `nix-script` arguments"
+  let args = buildArgs opts magix
+  logD $ "The `nix-script` arguments are " <> unwords args
+
+  logD "Executing `nix-script` to compile and run the script"
+  callProcess "nix-script" args
   logD "Done"

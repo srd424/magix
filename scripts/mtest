@@ -5,4 +5,4 @@ set -e
 cabal clean
 cabal build all
 cabal test
-cabal run magix -- test-scripts/minimal
+cabal run magix -- --verbosity Debug test-scripts/minimal
