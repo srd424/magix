@@ -2,15 +2,14 @@
   pkgs ? import <nixpkgs> { },
 }:
 
-let
-  src = __SCRIPT_SOURCE__;
-in
 pkgs.writeShellApplication {
   name = "__SCRIPT_NAME__";
 
   runtimeInputs = with pkgs; [ __RUNTIME_INPUTS__ ];
 
   text = ''
-    ${pkgs.bash}/bin/bash ${src} "$@"
+    BASH_ARGV0=__SCRIPT_NAME__
+    # shellcheck source=/dev/null
+    source ${__SCRIPT_SOURCE__} "$@"
   '';
 }

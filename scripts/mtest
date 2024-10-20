@@ -4,7 +4,7 @@ set -e
 
 # Clean up.
 cabal clean
-rm -rf "$XDG_CACHE_HOME/magix"
+rm -rf "$XDG_CACHE_HOME/magix/*"
 
 # Build and run.
 cabal build all
