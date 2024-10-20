@@ -28,5 +28,5 @@ pkgs.stdenv.mkDerivation {
     mkdir -p $out
     mv bin $out/bin
 
-    wrapProgram $out/bin/__SCRIPT_NAME__ --argv0 __SCRIPT_NAME__'';
+    wrapProgram $out/bin/__SCRIPT_NAME__'';
 }

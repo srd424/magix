@@ -16,11 +16,12 @@ where
 
 import Magix.Build (getResultDir)
 import Magix.Config (Config (scriptName))
+import Magix.Options (Options (scriptArgs))
 import System.FilePath ((</>))
 import System.Process (callProcess)
 
-run :: Config -> IO ()
-run c = do
-  resultDir <- getResultDir c
-  let executable = resultDir </> "bin" </> scriptName c
-  callProcess executable []
+run :: Options -> Config -> IO ()
+run opts conf = do
+  resultDir <- getResultDir conf
+  let executable = resultDir </> "bin" </> scriptName conf
+  callProcess executable (scriptArgs opts)

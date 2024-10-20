@@ -23,7 +23,13 @@ import Data.Text (Text)
 import Data.Text.IO (writeFile)
 import Magix.Config (Config (..))
 import Numeric (showHex)
-import System.Directory (createDirectoryIfMissing, doesDirectoryExist, doesPathExist, removeDirectoryLink, removeDirectoryRecursive, removeFile)
+import System.Directory
+  ( createDirectoryIfMissing,
+    doesDirectoryExist,
+    doesPathExist,
+    removeDirectoryLink,
+    removeDirectoryRecursive,
+  )
 import System.Environment.XDG.BaseDir (getUserCacheFile)
 import System.FilePath ((</>))
 import System.Process (callProcess)

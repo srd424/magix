@@ -1,0 +1,4 @@
+#!/usr/bin/env magix
+#!magix bash
+
+echo "Command line arguments are: $@"

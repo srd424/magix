@@ -17,9 +17,10 @@ module Magix.Options
   )
 where
 
+import Control.Applicative (Alternative (..))
 import Options.Applicative
   ( Parser,
-    ParserInfo,
+    ParserInfo (infoPolicy),
     execParser,
     flag,
     fullDesc,
@@ -32,6 +33,7 @@ import Options.Applicative
     short,
     strArgument,
   )
+import Options.Applicative.Types (ArgPolicy (..))
 
 data Verbosity = Info | Debug deriving (Eq, Show)
 
@@ -40,12 +42,13 @@ data Rebuild = ReuseBuildIfAvailable | ForceRebuild deriving (Eq, Show)
 data Options = Options
   { verbosity :: !Verbosity,
     rebuild :: !Rebuild,
-    scriptPath :: !FilePath
+    scriptPath :: !FilePath,
+    scriptArgs :: ![String]
   }
   deriving (Eq, Show)
 
 pOptions :: Parser Options
-pOptions = Options <$> pLogLevel <*> pForceRebuild <*> pScriptPath
+pOptions = Options <$> pLogLevel <*> pForceRebuild <*> pScriptPath <*> pScriptArgs
 
 pLogLevel :: Parser Verbosity
 pLogLevel =
@@ -72,6 +75,14 @@ pScriptPath =
   strArgument
     (metavar "SCRIPT_FILE_PATH" <> help "File path of script to run")
 
+pScriptArgs :: Parser [String]
+pScriptArgs =
+  many $
+    strArgument
+      ( metavar "SCRIPT_ARGS"
+          <> help "Arguments passed on to the script"
+      )
+
 desc :: String
 desc = "Run and cache compiled scripts using the Nix package manager"
 
@@ -79,4 +90,4 @@ optionsParser :: ParserInfo Options
 optionsParser = info (helper <*> pOptions) (fullDesc <> progDesc desc)
 
 getOptions :: IO Options
-getOptions = execParser optionsParser
+getOptions = execParser (optionsParser {infoPolicy = NoIntersperse})

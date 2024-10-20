@@ -90,5 +90,5 @@ main = do
       logD "Built Nix expression"
 
   logD "Running"
-  run conf
+  run opts conf
   logD "Done"

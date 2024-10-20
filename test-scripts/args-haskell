@@ -1,0 +1,7 @@
+#!/usr/bin/env magix
+#!magix haskell
+
+import System.Environment (getArgs)
+
+main :: IO ()
+main = getArgs >>= print
