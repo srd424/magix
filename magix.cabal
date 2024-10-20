@@ -60,6 +60,7 @@ library
     Magix.Haskell.Directives
     Magix.Haskell.Expression
     Magix.Options
+    Magix.Run
 
   hs-source-dirs:  src
   other-modules:   Paths_magix

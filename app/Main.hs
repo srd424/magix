@@ -18,6 +18,7 @@ import Data.Text (unpack)
 import Data.Text.IO (readFile)
 import Magix (BuildStatus (..), Options (..), build, getBuildStatus, getConfig, getDirectives, getNixExpression, getOptions)
 import Magix.Options (Verbosity (..))
+import Magix.Run (run)
 import System.IO (Handle, stderr)
 import System.Log.Formatter (simpleLogFormatter)
 import System.Log.Handler (setFormatter)
@@ -83,3 +84,5 @@ main = do
       logD "Built Nix expression"
 
   logD "Running"
+  run conf
+  logD "Done"
