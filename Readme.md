@@ -7,8 +7,8 @@ simple and stupid. Magix is a tiny wrapper around `nix-build`.
 
 # Ideas
 
+-   Adapt `argv0` (useful for help messages).
 -   Clean.
 -   More tests.
--   Bash with runtime dependencies.
 -   Emacs auto mode detection.
 
