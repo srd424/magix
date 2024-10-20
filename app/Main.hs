@@ -17,7 +17,17 @@ where
 import Control.Monad (when)
 import Data.Text (unpack)
 import Data.Text.IO (readFile)
-import Magix (BuildStatus (..), Options (..), build, getBuildStatus, getConfig, getDirectives, getNixExpression, getOptions, removeBuild)
+import Magix
+  ( BuildStatus (..),
+    Options (..),
+    build,
+    getBuildStatus,
+    getConfig,
+    getDirectives,
+    getNixExpression,
+    getOptions,
+    removeBuild,
+  )
 import Magix.Options (Rebuild (..), Verbosity (..))
 import Magix.Run (run)
 import System.IO (Handle, stderr)
@@ -25,7 +35,8 @@ import System.Log.Formatter (simpleLogFormatter)
 import System.Log.Handler (setFormatter)
 import System.Log.Handler.Simple (GenericHandler, streamHandler)
 import System.Log.Logger
-  ( Priority (..),
+  ( Logger,
+    Priority (..),
     getLogger,
     logL,
     removeHandler,
@@ -42,7 +53,7 @@ withFormatter handler = setFormatter handler formatter
   where
     formatter = simpleLogFormatter "[$time $loggername $prio] $msg"
 
-setupLogger :: Verbosity -> IO (String -> IO ())
+setupLogger :: Verbosity -> IO Logger
 setupLogger v = do
   let prio = case v of
         Info -> INFO
@@ -51,13 +62,15 @@ setupLogger v = do
   stderrHandler <- withFormatter <$> streamHandler stderr prio
   logger <- setHandlers [stderrHandler] . setLevel prio <$> getLogger "Magix.Main"
   saveGlobalLogger logger
-  let logD = logL logger DEBUG
-  pure logD
+  pure logger
 
 main :: IO ()
 main = do
   opts <- getOptions
-  logD <- setupLogger (verbosity opts)
+  logger <- setupLogger (verbosity opts)
+  let logI = logL logger INFO
+      logD = logL logger DEBUG
+
   logD $ "Options are " <> show opts
 
   let p = scriptPath opts
@@ -85,7 +98,7 @@ main = do
       logD "Getting Nix expression"
       expr <- getNixExpression conf dirs
       logD $ "Nix expression is " <> unpack expr
-      logD "Building Nix expression"
+      logI "Building Nix expression"
       build conf expr
       logD "Built Nix expression"
 
