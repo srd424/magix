@@ -1,6 +1,6 @@
 -- |
 -- Module      :  Magix.Expression
--- Description :  Build `nix-script` command line
+-- Description :  Get Nix expressions
 -- Copyright   :  2024 Dominik Schrempf
 -- License     :  GPL-3.0-or-later
 --
