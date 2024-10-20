@@ -19,9 +19,14 @@ module Magix
     getDirectives,
     -- Expression.
     getNixExpression,
+    -- Build.
+    BuildStatus (..),
+    getBuildStatus,
+    build,
   )
 where
 
+import Magix.Build (BuildStatus (..), build, getBuildStatus)
 import Magix.Config (getConfig)
 import Magix.Directives (getDirectives)
 import Magix.Expression (getNixExpression)

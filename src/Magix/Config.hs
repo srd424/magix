@@ -17,6 +17,7 @@ where
 
 import Data.Hashable (hash)
 import Data.Text (Text)
+import System.Directory (makeAbsolute)
 import System.FilePath (takeBaseName)
 import Prelude hiding (readFile)
 
@@ -27,5 +28,7 @@ data Config = Config
   }
   deriving (Eq, Show)
 
-getConfig :: FilePath -> Text -> Config
-getConfig p x = Config p (takeBaseName p) (hash x)
+getConfig :: FilePath -> Text -> IO Config
+getConfig p x = do
+  absP <- makeAbsolute p
+  pure $ Config absP (takeBaseName p) (hash x)

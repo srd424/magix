@@ -52,6 +52,7 @@ library
   import:          common, lib
   exposed-modules:
     Magix
+    Magix.Build
     Magix.Config
     Magix.Directives
     Magix.Directives.Common
@@ -66,11 +67,14 @@ library
   ghc-options:
   build-depends:
     , base                  >=4.7 && <5
+    , directory
     , filepath
     , hashable
     , megaparsec
     , optparse-applicative
+    , process
     , text
+    , xdg-basedir
 
 executable magix
   import:          common, exec

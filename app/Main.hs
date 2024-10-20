@@ -16,13 +16,7 @@ where
 
 import Data.Text (unpack)
 import Data.Text.IO (readFile)
-import Magix
-  ( Options (..),
-    getConfig,
-    getDirectives,
-    getNixExpression,
-    getOptions,
-  )
+import Magix (BuildStatus (..), Options (..), build, getBuildStatus, getConfig, getDirectives, getNixExpression, getOptions)
 import Magix.Options (Verbosity (..))
 import System.IO (Handle, stderr)
 import System.Log.Formatter (simpleLogFormatter)
@@ -68,13 +62,24 @@ main = do
   logD $ "Reading script at path " <> p
   f <- readFile p
 
-  let conf = getConfig p f
+  conf <- getConfig p f
   logD $ "Magix configuration is " <> show conf
 
   logD "Parsing directives"
   let dirs = getDirectives p f
   logD $ "Directives are " <> show dirs
 
-  logD "Getting Nix expression"
-  expr <- getNixExpression conf dirs
-  logD $ "Nix expression is " <> unpack expr
+  logD "Checking build status"
+  buildStatus <- getBuildStatus conf
+  case buildStatus of
+    HasBeenBuilt -> logD "Script has already been built"
+    NeedToBuild -> do
+      logD "Need to build"
+      logD "Getting Nix expression"
+      expr <- getNixExpression conf dirs
+      logD $ "Nix expression is " <> unpack expr
+      logD "Building Nix expression"
+      build conf expr
+      logD "Built Nix expression"
+
+  logD "Running"

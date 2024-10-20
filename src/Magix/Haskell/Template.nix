@@ -6,17 +6,20 @@
 
 pkgs.stdenv.mkDerivation {
   name = "__SCRIPT_NAME__";
+
   src = __SCRIPT_SOURCE__;
+  dontUnpack = true;
 
   buildInputs = with pkgs; [
     (haskellPackages.ghcWithPackages (ps: with ps; [ __HASKELL_PACKAGES__ ]))
   ];
   buildPhase = ''
-    SRC=__SCRIPT_NAME__
     OUT=bin/__SCRIPT_NAME__
+    SCRIPT_SOURCE_HS=__SCRIPT_NAME__.hs
 
     mkdir bin
-    mv $SRC $SRC.hs; ghc __HASKELL_GHC_FLAGS__ -o $OUT $SRC.hs
+    ln -s $src $SCRIPT_SOURCE_HS
+    ghc __HASKELL_GHC_FLAGS__ -o $OUT $SCRIPT_SOURCE_HS
   '';
 
   installPhase = ''
