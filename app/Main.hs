@@ -14,10 +14,11 @@ module Main
   )
 where
 
+import Control.Monad (when)
 import Data.Text (unpack)
 import Data.Text.IO (readFile)
-import Magix (BuildStatus (..), Options (..), build, getBuildStatus, getConfig, getDirectives, getNixExpression, getOptions)
-import Magix.Options (Verbosity (..))
+import Magix (BuildStatus (..), Options (..), build, getBuildStatus, getConfig, getDirectives, getNixExpression, getOptions, removeBuild)
+import Magix.Options (Rebuild (..), Verbosity (..))
 import Magix.Run (run)
 import System.IO (Handle, stderr)
 import System.Log.Formatter (simpleLogFormatter)
@@ -69,6 +70,11 @@ main = do
   logD "Parsing directives"
   let dirs = getDirectives p f
   logD $ "Directives are " <> show dirs
+
+  when (rebuild opts == ForceRebuild) $ do
+    logD "Removing existing build"
+    removeBuild conf
+    logD "Removed existing build"
 
   logD "Checking build status"
   buildStatus <- getBuildStatus conf

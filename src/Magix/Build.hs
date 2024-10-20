@@ -14,14 +14,16 @@ module Magix.Build
     BuildStatus (..),
     getBuildStatus,
     build,
+    removeBuild,
   )
 where
 
+import Control.Monad (when)
 import Data.Text (Text)
 import Data.Text.IO (writeFile)
 import Magix.Config (Config (..))
 import Numeric (showHex)
-import System.Directory (createDirectoryIfMissing, doesPathExist)
+import System.Directory (createDirectoryIfMissing, doesDirectoryExist, doesPathExist, removeDirectoryLink, removeDirectoryRecursive, removeFile)
 import System.Environment.XDG.BaseDir (getUserCacheFile)
 import System.FilePath ((</>))
 import System.Process (callProcess)
@@ -62,3 +64,12 @@ build c e = do
   -- Build.
   resultDir <- getResultDir c
   callProcess "nix-build" ["--out-link", resultDir, buildDir]
+
+removeBuild :: Config -> IO ()
+removeBuild c = do
+  buildDir <- getBuildDir c
+  buildDirExists <- doesDirectoryExist buildDir
+  when buildDirExists $ removeDirectoryRecursive buildDir
+  resultDir <- getResultDir c
+  resultDirExists <- doesDirectoryExist resultDir
+  when resultDirExists $ removeDirectoryLink resultDir
