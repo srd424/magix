@@ -1,7 +1,11 @@
 #!/usr/bin/env magix
 #!magix haskell
 
-import System.Environment (getArgs)
+import System.Environment ( getArgs, getProgName )
 
 main :: IO ()
-main = getArgs >>= print
+main = do
+  putStrLn "Program name:"
+  getProgName >>= print
+  putStrLn "Arguments:"
+  getArgs >>= print

@@ -1,4 +1,5 @@
 #!/usr/bin/env magix
 #!magix bash
 
+echo "Command basename is: $0"
 echo "Command line arguments are: $@"
