@@ -62,20 +62,20 @@ build c e = do
   -- Build directory.
   buildDir <- getBuildDir c
   createDirectoryIfMissing True buildDir
-
   -- Expression.
   let exprPath = getExprPath buildDir
   writeFile exprPath e
-
   -- Build.
   resultDir <- getResultDir c
   callProcess "nix-build" ["--out-link", resultDir, buildDir]
 
 removeBuild :: Config -> IO ()
 removeBuild c = do
+  -- Build directory.
   buildDir <- getBuildDir c
   buildDirExists <- doesDirectoryExist buildDir
   when buildDirExists $ removeDirectoryRecursive buildDir
+  -- Result directory.
   resultDir <- getResultDir c
   resultDirExists <- doesDirectoryExist resultDir
   when resultDirExists $ removeDirectoryLink resultDir

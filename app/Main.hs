@@ -81,7 +81,7 @@ main = do
   logD $ "Magix configuration is " <> show conf
 
   logD "Parsing directives"
-  let dirs = getDirectives p f
+  dirs <- getDirectives p f
   logD $ "Directives are " <> show dirs
 
   when (rebuild opts == ForceRebuild) $ do
