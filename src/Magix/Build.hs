@@ -43,11 +43,11 @@ showHash h
 getBuildDir :: Config -> IO FilePath
 getBuildDir (Config _ n h) = getUserCacheFile "magix" $ showHash h <> "-" <> n <> "-build"
 
-getResultDir :: Config -> IO FilePath
-getResultDir (Config _ n h) = getUserCacheFile "magix" $ showHash h <> "-" <> n <> "-result"
-
 getExprPath :: FilePath -> FilePath
 getExprPath buildDir = buildDir </> "default.nix"
+
+getResultDir :: Config -> IO FilePath
+getResultDir (Config _ n h) = getUserCacheFile "magix" $ showHash h <> "-" <> n <> "-result"
 
 data BuildStatus = HasBeenBuilt | NeedToBuild
 

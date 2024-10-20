@@ -16,17 +16,16 @@ pkgs.stdenv.mkDerivation {
   ];
 
   buildPhase = ''
-    OUT=bin/__SCRIPT_NAME__
-    SCRIPT_SOURCE_HS=__SCRIPT_NAME__.hs
-
     mkdir bin
-    ln -s $src $SCRIPT_SOURCE_HS
-    ghc __GHC_FLAGS__ -o $OUT $SCRIPT_SOURCE_HS
+
+    script_source_hs="__SCRIPT_NAME__.hs"
+    ln -s "$src" "$script_source_hs"
+    ghc __GHC_FLAGS__ -o "bin/__SCRIPT_NAME__" "$script_source_hs"
   '';
 
   installPhase = ''
     mkdir -p $out
-    mv bin $out/bin
+    mv bin $out/
 
-    wrapProgram $out/bin/__SCRIPT_NAME__'';
+    wrapProgram "$out/bin/__SCRIPT_NAME__"'';
 }
