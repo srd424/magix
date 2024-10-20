@@ -19,9 +19,9 @@ where
 
 import Control.Applicative ((<|>))
 import Data.Text (Text)
-import Magix.Bash.Directives (BashDirectives (..), pBashDirectives)
 import Magix.Directives.Common (Parser)
-import Magix.Haskell.Directives (HaskellDirectives (..), pHaskellDirectives)
+import Magix.Languages.Bash.Directives (BashDirectives (..), pBashDirectives)
+import Magix.Languages.Haskell.Directives (HaskellDirectives (..), pHaskellDirectives)
 import Text.Megaparsec (MonadParsec (..), chunk, errorBundlePretty, parse)
 import Text.Megaparsec.Char (space1)
 import Prelude hiding (readFile)

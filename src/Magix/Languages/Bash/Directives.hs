@@ -1,5 +1,5 @@
 -- |
--- Module      :  Magix.Bash.Directives
+-- Module      :  Magix.Languages.Bash.Directives
 -- Description :  Bash directives for Magix
 -- Copyright   :  2024 Dominik Schrempf
 -- License     :  GPL-3.0-or-later
@@ -9,7 +9,7 @@
 -- Portability :  portable
 --
 -- Creation date: Fri Oct 18 09:17:40 2024.
-module Magix.Bash.Directives
+module Magix.Languages.Bash.Directives
   ( BashDirectives (..),
     pBashDirectives,
   )

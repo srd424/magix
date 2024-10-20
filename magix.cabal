@@ -22,8 +22,8 @@ extra-doc-files:
 
 extra-source-files:
 data-files:
-  src/Magix/Bash/Template.nix
-  src/Magix/Haskell/Template.nix
+  src/Magix/Languages/Bash/Template.nix
+  src/Magix/Languages/Haskell/Template.nix
 
 source-repository head
   location: https://github.com/dschrempf/magix
@@ -54,15 +54,15 @@ library
   import:          common, lib
   exposed-modules:
     Magix
-    Magix.Bash.Directives
-    Magix.Bash.Expression
     Magix.Build
     Magix.Config
     Magix.Directives
     Magix.Directives.Common
     Magix.Expression
-    Magix.Haskell.Directives
-    Magix.Haskell.Expression
+    Magix.Languages.Bash.Directives
+    Magix.Languages.Bash.Expression
+    Magix.Languages.Haskell.Directives
+    Magix.Languages.Haskell.Expression
     Magix.Options
     Magix.Run
 
@@ -101,8 +101,8 @@ test-suite test-magix
   other-modules:
     Magix.Directives.CommonSpec
     Magix.DirectivesSpec
-    Magix.Haskell.DirectivesSpec
-    Magix.Haskell.ExpressionSpec
+    Magix.Languages.Haskell.DirectivesSpec
+    Magix.Languages.Haskell.ExpressionSpec
 
   autogen-modules:
   ghc-options:

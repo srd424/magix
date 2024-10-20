@@ -12,10 +12,10 @@
 module Magix.Expression (getNixExpression) where
 
 import Data.Text (Text)
-import Magix.Bash.Expression (getBashNixExpression)
 import Magix.Config (Config (..))
 import Magix.Directives (Directives (..))
-import Magix.Haskell.Expression (getHaskellNixExpression)
+import Magix.Languages.Bash.Expression (getBashNixExpression)
+import Magix.Languages.Haskell.Expression (getHaskellNixExpression)
 import Prelude hiding (unwords)
 
 getNixExpression :: Config -> Directives -> IO Text

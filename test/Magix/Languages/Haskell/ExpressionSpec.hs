@@ -1,5 +1,5 @@
 -- |
--- Module      :  Magix.Haskell.ExpressionSpec
+-- Module      :  Magix.Languages.Haskell.ExpressionSpec
 -- Description :  Tests for building Haskell command lines
 -- Copyright   :  2024 Dominik Schrempf
 -- License     :  GPL-3.0-or-later
@@ -9,15 +9,15 @@
 -- Portability :  portable
 --
 -- Creation date: Fri Oct 18 15:52:10 2024.
-module Magix.Haskell.ExpressionSpec
+module Magix.Languages.Haskell.ExpressionSpec
   ( spec,
   )
 where
 
 import Data.Text (Text, isInfixOf)
 import Magix.Config (Config (..))
-import Magix.Haskell.Directives (HaskellDirectives (..))
-import Magix.Haskell.Expression (getHaskellNixExpression)
+import Magix.Languages.Haskell.Directives (HaskellDirectives (..))
+import Magix.Languages.Haskell.Expression (getHaskellNixExpression)
 import Test.Hspec (Spec, describe, it, shouldSatisfy)
 
 config :: Config

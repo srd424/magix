@@ -1,5 +1,5 @@
 -- |
--- Module      :  Magix.Bash.Expression
+-- Module      :  Magix.Languages.Bash.Expression
 -- Description :  Build Bash command lines
 -- Copyright   :  2024 Dominik Schrempf
 -- License     :  GPL-3.0-or-later
@@ -9,13 +9,16 @@
 -- Portability :  portable
 --
 -- Creation date: Fri Oct 18 13:36:32 2024.
-module Magix.Bash.Expression (getBashNixExpression) where
+module Magix.Languages.Bash.Expression
+  ( getBashNixExpression,
+  )
+where
 
 import Data.Foldable (Foldable (..))
 import Data.Text (Text, pack, replace, unwords)
 import Data.Text.IO (readFile)
-import Magix.Bash.Directives (BashDirectives (..))
 import Magix.Config (Config (..))
+import Magix.Languages.Bash.Directives (BashDirectives (..))
 import Paths_magix (getDataFileName)
 import Prelude hiding (readFile, unwords)
 
@@ -24,7 +27,7 @@ replace' t (x, y) = replace x y t
 
 getBashNixExpression :: Config -> BashDirectives -> IO Text
 getBashNixExpression c (BashDirectives ps) = do
-  f <- getDataFileName "src/Magix/Bash/Template.nix"
+  f <- getDataFileName "src/Magix/Languages/Bash/Template.nix"
   e <- readFile f
   let rs =
         [ ("__SCRIPT_NAME__", pack $ scriptName c),

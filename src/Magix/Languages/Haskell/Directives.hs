@@ -1,5 +1,5 @@
 -- |
--- Module      :  Magix.Haskell.Directives
+-- Module      :  Magix.Languages.Haskell.Directives
 -- Description :  Haskell directives for Magix
 -- Copyright   :  2024 Dominik Schrempf
 -- License     :  GPL-3.0-or-later
@@ -9,7 +9,7 @@
 -- Portability :  portable
 --
 -- Creation date: Fri Oct 18 09:17:40 2024.
-module Magix.Haskell.Directives
+module Magix.Languages.Haskell.Directives
   ( HaskellDirectives (..),
     pHaskellDirectives,
   )
