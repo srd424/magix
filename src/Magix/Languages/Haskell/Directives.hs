@@ -1,3 +1,5 @@
+{-# LANGUAGE LambdaCase #-}
+
 -- |
 -- Module      :  Magix.Languages.Haskell.Directives
 -- Description :  Haskell directives for Magix
@@ -29,24 +31,21 @@ data HaskellDirectives = HaskellDirectives
   }
   deriving (Eq, Show)
 
-data HaskellDirective
-  = HaskellPackages ![Text]
-  | GhcFlags ![Text]
+data HaskellDirective = HaskellPackages ![Text] | GhcFlags ![Text]
 
 pHaskellPackages :: Parser HaskellDirective
-pHaskellPackages = HaskellPackages <$> try (pDirectiveWithValues "haskellPackages")
+pHaskellPackages = HaskellPackages <$> pDirectiveWithValues "haskellPackages"
 
 pGhcFlags :: Parser HaskellDirective
-pGhcFlags = GhcFlags <$> try (pDirectiveWithValues "ghcFlags")
+pGhcFlags = GhcFlags <$> pDirectiveWithValues "ghcFlags"
 
 pHaskellDirective :: Parser HaskellDirective
-pHaskellDirective = pHaskellPackages <|> pGhcFlags
+pHaskellDirective = try pHaskellPackages <|> pGhcFlags
 
 addHaskellDirective :: HaskellDirectives -> HaskellDirective -> HaskellDirectives
-addHaskellDirective (HaskellDirectives ps fs) (HaskellPackages ps') =
-  HaskellDirectives (ps <> ps') fs
-addHaskellDirective (HaskellDirectives ps fs) (GhcFlags fs') =
-  HaskellDirectives ps (fs <> fs')
+addHaskellDirective (HaskellDirectives ps fs) = \case
+  (HaskellPackages ps') -> HaskellDirectives (ps <> ps') fs
+  (GhcFlags fs') -> HaskellDirectives ps (fs <> fs')
 
 pHaskellDirectives :: Parser HaskellDirectives
 pHaskellDirectives = do

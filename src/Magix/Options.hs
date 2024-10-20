@@ -73,7 +73,7 @@ pForceRebuild =
 pScriptPath :: Parser FilePath
 pScriptPath =
   strArgument
-    (metavar "SCRIPT_FILE_PATH" <> help "File path of script to run")
+    (metavar "SCRIPT_FILE_PATH" <> help "File path of script to build, cache and run")
 
 pScriptArgs :: Parser [String]
 pScriptArgs =
