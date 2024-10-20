@@ -15,7 +15,7 @@ module Magix.Haskell.DirectivesSpec
 where
 
 import Data.Text (Text, unlines)
-import Magix.Haskell.Directives (HaskellMagix (..), pHaskellMagix)
+import Magix.Haskell.Directives (HaskellDirectives (..), pHaskellDirectives)
 import Test.Hspec (Spec, describe, it, shouldBe)
 import Text.Megaparsec (parse)
 import Prelude hiding (readFile, unlines)
@@ -42,12 +42,12 @@ multiple =
 
 spec :: Spec
 spec = do
-  describe "pHaskellMagix" $ do
+  describe "pHaskellDirectives" $ do
     it "parses minimal sample directives" $ do
-      parse pHaskellMagix "" minimal
-        `shouldBe` Right (HaskellMagix ["bytestring"] ["-threaded"])
+      parse pHaskellDirectives "" minimal
+        `shouldBe` Right (HaskellDirectives ["bytestring"] ["-threaded"])
 
-  describe "pHaskellMagix" $ do
+  describe "pHaskellDirectives" $ do
     it "parses more interesting sample directives with multiple declarations" $ do
-      parse pHaskellMagix "" multiple
-        `shouldBe` Right (HaskellMagix ["a", "b", "c", "d", "e", "f"] ["1", "2", "3", "4"])
+      parse pHaskellDirectives "" multiple
+        `shouldBe` Right (HaskellDirectives ["a", "b", "c", "d", "e", "f"] ["1", "2", "3", "4"])

@@ -17,9 +17,8 @@ where
 import Data.Either (isRight)
 import Data.Text (Text)
 import Data.Text.IO (readFile)
-import Magix.Directives (pMagix, pShebang)
-import Magix.Haskell.Directives (HaskellMagix (..))
-import Magix.Magix (Magix (..))
+import Magix.Directives (Directives (..), pDirectives, pShebang)
+import Magix.Haskell.Directives (HaskellDirectives (..))
 import Test.Hspec (Spec, describe, it, shouldBe, shouldSatisfy)
 import Text.Megaparsec (parse)
 import Prelude hiding (readFile)
@@ -39,8 +38,8 @@ spec = do
     it "parses the shebang" $
       parse pShebang "" magixShebang `shouldSatisfy` isRight
 
-  describe "pMagix" $ do
+  describe "pDirectives" $ do
     it "parses a minimal sample script" $ do
       minimal <- readMinimal
-      parse pMagix fnMinimal minimal
-        `shouldBe` Right (MHaskellMagix (HaskellMagix ["bytestring"] ["-threaded"]))
+      parse pDirectives fnMinimal minimal
+        `shouldBe` Right (Haskell (HaskellDirectives ["bytestring"] ["-threaded"]))

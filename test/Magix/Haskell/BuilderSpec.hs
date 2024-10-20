@@ -15,16 +15,16 @@ module Magix.Haskell.BuilderSpec
 where
 
 import Data.Text (Text, isInfixOf)
-import Magix.Config (MagixConfig (..))
+import Magix.Config (Config (..))
 import Magix.Haskell.Builder (buildHaskellNixExpression)
-import Magix.Haskell.Directives (HaskellMagix (..))
+import Magix.Haskell.Directives (HaskellDirectives (..))
 import Test.Hspec (Spec, describe, it, shouldSatisfy)
 
-magixConfig :: MagixConfig
-magixConfig = MagixConfig "fakeScriptPath" "fakeScriptName"
+config :: Config
+config = Config "fakeScriptPath" "fakeScriptName" 0
 
-magix :: HaskellMagix
-magix = HaskellMagix ["fake", "packages"] ["fake", "flags"]
+directives :: HaskellDirectives
+directives = HaskellDirectives ["fake", "packages"] ["fake", "flags"]
 
 -- NOTE: Here we could be a bit more rigorous and parse proper templates.
 doesNotContainTemplate :: Text -> Bool
@@ -34,5 +34,5 @@ spec :: Spec
 spec = do
   describe "buildHaskellNixExpression" $ do
     it "works correctly for some sample data" $ do
-      expr <- buildHaskellNixExpression magixConfig magix
+      expr <- buildHaskellNixExpression config directives
       expr `shouldSatisfy` doesNotContainTemplate
