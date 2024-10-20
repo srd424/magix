@@ -21,7 +21,7 @@ extra-doc-files:
   Readme.md
 
 extra-source-files:
-data-files:         src/Magix/**/Template.nix
+data-files:         src/Magix/Haskell/Template.nix
 
 source-repository head
   location: https://github.com/dschrempf/magix
