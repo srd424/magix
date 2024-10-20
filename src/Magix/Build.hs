@@ -20,17 +20,23 @@ where
 import Data.Text (Text)
 import Data.Text.IO (writeFile)
 import Magix.Config (Config (..))
+import Numeric (showHex)
 import System.Directory (createDirectoryIfMissing, doesPathExist)
 import System.Environment.XDG.BaseDir (getUserCacheFile)
 import System.FilePath ((</>))
 import System.Process (callProcess)
 import Prelude hiding (writeFile)
 
+showHash :: Int -> String
+showHash h
+  | h < 0 = '1' : showHex (-h) ""
+  | otherwise = '-' : showHex h ""
+
 getBuildDir :: Config -> IO FilePath
-getBuildDir (Config _ n h) = getUserCacheFile "magix" $ show h <> "-" <> n <> "-build"
+getBuildDir (Config _ n h) = getUserCacheFile "magix" $ showHash h <> "-" <> n <> "-build"
 
 getResultDir :: Config -> IO FilePath
-getResultDir (Config _ n h) = getUserCacheFile "magix" $ show h <> "-" <> n <> "-result"
+getResultDir (Config _ n h) = getUserCacheFile "magix" $ showHash h <> "-" <> n <> "-result"
 
 getExprPath :: FilePath -> FilePath
 getExprPath buildDir = buildDir </> "default.nix"
