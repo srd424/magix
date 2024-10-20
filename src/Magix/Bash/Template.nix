@@ -1,6 +1,5 @@
 {
   pkgs ? import <nixpkgs> { },
-
   makeWrapper ? pkgs.makeWrapper,
 }:
 
@@ -10,19 +9,22 @@ pkgs.stdenv.mkDerivation {
   src = __SCRIPT_SOURCE__;
   dontUnpack = true;
 
-  nativebuildInputs = [ makeWrapper ];
+  nativeBuildInputs = [ makeWrapper ];
 
-  runtimeInputs = with pkgs; [ __RUNTIME_INPUTS__ ];
   buildPhase = ''
     OUT=bin/__SCRIPT_NAME__
 
     mkdir bin
-    cp $src $OUT
+    echo "#!${pkgs.bash}/bin/bash" > $OUT
+    cat $src >> $OUT
+    chmod +x $OUT
   '';
 
   installPhase = ''
     mkdir -p $out
     mv bin $out/bin
 
-    wrapProgram $out/bin/__SCRIPT_NAME__ --argv0 __SCRIPT_NAME__'';
+    wrapProgram $out/bin/__SCRIPT_NAME__ --argv0 __SCRIPT_NAME__ \
+      --prefix PATH : ${with pkgs; lib.makeBinPath [ __BASH_RUNTIME_INPUTS__ ]}
+  '';
 }

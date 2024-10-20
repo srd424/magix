@@ -1,6 +1,5 @@
 {
   pkgs ? import <nixpkgs> { },
-
   makeWrapper ? pkgs.makeWrapper,
 }:
 
@@ -15,6 +14,7 @@ pkgs.stdenv.mkDerivation {
   buildInputs = with pkgs; [
     (haskellPackages.ghcWithPackages (ps: with ps; [ __HASKELL_PACKAGES__ ]))
   ];
+
   buildPhase = ''
     OUT=bin/__SCRIPT_NAME__
     SCRIPT_SOURCE_HS=__SCRIPT_NAME__.hs

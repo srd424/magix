@@ -27,7 +27,7 @@ magixShebang :: Text
 magixShebang = "#!/usr/bin/env magix"
 
 fnMinimal :: FilePath
-fnMinimal = "test-scripts/minimal"
+fnMinimal = "test-scripts/minimal-haskell"
 
 readMinimal :: IO Text
 readMinimal = readFile fnMinimal

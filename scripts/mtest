@@ -4,9 +4,10 @@ set -e
 
 # Clean up.
 cabal clean
-rm -r "$XDG_CACHE_HOME/magix"
+rm -rf "$XDG_CACHE_HOME/magix"
 
 # Build and run.
 cabal build all
 cabal test
-cabal run magix -- -v test-scripts/minimal
+cabal run magix -- -v test-scripts/minimal-bash
+cabal run magix -- -v test-scripts/minimal-haskell

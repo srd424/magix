@@ -21,7 +21,9 @@ extra-doc-files:
   Readme.md
 
 extra-source-files:
-data-files:         src/Magix/Haskell/Template.nix
+data-files:
+  src/Magix/Bash/Template.nix
+  src/Magix/Haskell/Template.nix
 
 source-repository head
   location: https://github.com/dschrempf/magix
@@ -52,6 +54,8 @@ library
   import:          common, lib
   exposed-modules:
     Magix
+    Magix.Bash.Directives
+    Magix.Bash.Expression
     Magix.Build
     Magix.Config
     Magix.Directives
