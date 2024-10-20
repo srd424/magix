@@ -46,11 +46,9 @@ withFormatter handler = setFormatter handler formatter
   where
     formatter = simpleLogFormatter "[$time $loggername $prio] $msg"
 
-main :: IO ()
-main = do
-  opts <- getOptions
-
-  let prio = case verbosity opts of
+setupLogger :: Verbosity -> IO (String -> IO ())
+setupLogger v = do
+  let prio = case v of
         Info -> INFO
         Debug -> DEBUG
   updateGlobalLogger rootLoggerName removeHandler
@@ -58,7 +56,12 @@ main = do
   logger <- setHandlers [stderrHandler] . setLevel prio <$> getLogger "Magix.Main"
   saveGlobalLogger logger
   let logD = logL logger DEBUG
+  pure logD
 
+main :: IO ()
+main = do
+  opts <- getOptions
+  logD <- setupLogger (verbosity opts)
   logD $ "Options are " <> show opts
 
   let p = scriptPath opts
