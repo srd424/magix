@@ -10,13 +10,19 @@
 --
 -- Creation date: Fri Oct 18 15:29:10 2024.
 module Magix
-  ( getDirectives,
-    getMagixOptions,
+  ( -- Options.
     MagixOptions (..),
-    buildArgs,
+    getMagixOptions,
+    -- Configuration.
+    getMagixConfig,
+    -- Directives.
+    getDirectives,
+    -- Expression.
+    buildNixExpression,
   )
 where
 
-import Magix.Builder (buildArgs)
+import Magix.Builder (buildNixExpression)
+import Magix.Config (getMagixConfig)
 import Magix.Directives (getDirectives)
 import Magix.Options (MagixOptions (..), getMagixOptions)

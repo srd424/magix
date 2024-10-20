@@ -9,31 +9,22 @@
 -- Portability :  portable
 --
 -- Creation date: Fri Oct 18 13:36:32 2024.
-module Magix.Haskell.Builder (buildHaskellArgs) where
+module Magix.Haskell.Builder (buildHaskellNixExpression) where
 
-import Data.Text (Text, unpack, unwords)
+import Data.Text (Text, pack, replace, unwords)
+import Data.Text.IO (readFile)
+import Magix.Config (MagixConfig (..))
 import Magix.Haskell.Directives (HaskellMagix (..))
-import Magix.Options (MagixOptions (..))
-import Prelude hiding (unwords)
+import Paths_magix (getDataFileName)
+import Prelude hiding (readFile, unwords)
 
-buildHaskellArgs :: MagixOptions -> HaskellMagix -> [String]
-buildHaskellArgs o (HaskellMagix ps fs) =
-  map unpack (buildCommandArgs ++ buildInputArgs)
-    ++ [scriptPath o]
-  where
-    buildCommandArgs = ["--build-command", getBuildCommand fs]
-    buildInputArgs = ["--build-input", getBuildInput ps]
-
--- 'mv $SRC $SRC.hs; ghc -threaded -o $OUT $SRC.hs'
-getBuildCommand :: [Text] -> Text
-getBuildCommand ghcFlags =
-  "mv $SRC $SRC.hs; ghc "
-    <> unwords ghcFlags
-    <> " -o $OUT $SRC.hs"
-
--- 'haskellPackages.ghcWithPackages (ps: with ps; [ containers text turtle ])'
-getBuildInput :: [Text] -> Text
-getBuildInput haskellPackages =
-  "haskellPackages.ghcWithPackages (ps: with ps; [ "
-    <> unwords haskellPackages
-    <> " ])"
+buildHaskellNixExpression :: MagixConfig -> HaskellMagix -> IO Text
+buildHaskellNixExpression c (HaskellMagix ps fs) = do
+  f <- getDataFileName "src/Magix/Haskell/Template.nix"
+  e <- readFile f
+  -- TODO: Foldl.
+  let e' = replace "__SCRIPT_NAME__" (pack $ scriptName c) e
+      e'' = replace "__SCRIPT_SOURCE__" (pack $ scriptPath c) e'
+      e''' = replace "__HASKELL_PACKAGES__" (unwords ps) e''
+      e'''' = replace "__HASKELL_GHC_FLAGS__" (unwords fs) e'''
+  pure e''''

@@ -21,7 +21,7 @@ extra-doc-files:
   Readme.md
 
 extra-source-files:
-data-files:
+data-files:         src/Magix/**/Template.nix
 
 source-repository head
   location: https://github.com/dschrempf/magix
@@ -53,6 +53,7 @@ library
   exposed-modules:
     Magix
     Magix.Builder
+    Magix.Config
     Magix.Directives
     Magix.Directives.Common
     Magix.Haskell.Builder
@@ -61,11 +62,12 @@ library
     Magix.Options
 
   hs-source-dirs:  src
-  other-modules:
-  autogen-modules:
+  other-modules:   Paths_magix
+  autogen-modules: Paths_magix
   ghc-options:
   build-depends:
     , base                  >=4.7 && <5
+    , filepath
     , megaparsec
     , optparse-applicative
     , text
@@ -81,7 +83,7 @@ executable magix
     , base      >=4.7 && <5
     , hslogger
     , magix
-    , process
+    , text
 
 test-suite test-magix
   import:          common, test

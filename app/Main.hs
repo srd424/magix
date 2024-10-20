@@ -14,8 +14,15 @@ module Main
   )
 where
 
-import Magix (MagixOptions (..), buildArgs, getDirectives, getMagixOptions)
-import Magix.Options (LogLevel (..))
+import Data.Text (unpack)
+import Magix
+  ( MagixOptions (..),
+    buildNixExpression,
+    getDirectives,
+    getMagixConfig,
+    getMagixOptions,
+  )
+import Magix.Options (Verbosity (..))
 import System.IO (Handle, stderr)
 import System.Log.Formatter (simpleLogFormatter)
 import System.Log.Handler (setFormatter)
@@ -31,7 +38,6 @@ import System.Log.Logger
     setLevel,
     updateGlobalLogger,
   )
-import System.Process (callProcess)
 
 withFormatter :: GenericHandler Handle -> GenericHandler Handle
 withFormatter handler = setFormatter handler formatter
@@ -53,14 +59,13 @@ main = do
 
   logD $ "Options are " <> show opts
 
+  let conf = getMagixConfig opts
+  logD $ "Magix configuration is " <> show conf
+
   logD "Parsing directives"
   magix <- getDirectives $ scriptPath opts
   logD $ "Directives are " <> show magix
 
-  logD "Building `nix-script` arguments"
-  let args = buildArgs opts magix
-  logD $ "The `nix-script` arguments are " <> unwords args
-
-  logD "Executing `nix-script` to compile and run the script"
-  callProcess "nix-script" args
-  logD "Done"
+  logD "Building Nix expression"
+  expr <- buildNixExpression conf magix
+  logD $ "Built Nix expression is " <> unpack expr

@@ -14,23 +14,24 @@ module Magix.Haskell.BuilderSpec
   )
 where
 
-import Magix (MagixOptions (..))
-import Magix.Haskell.Builder (buildHaskellArgs)
+import Data.Text (Text, isInfixOf)
+import Magix.Config (MagixConfig (..))
+import Magix.Haskell.Builder (buildHaskellNixExpression)
 import Magix.Haskell.Directives (HaskellMagix (..))
-import Magix.Options (LogLevel (..))
-import Test.Hspec (Spec, describe, it, shouldBe, shouldContain)
+import Test.Hspec (Spec, describe, it, shouldSatisfy)
 
-magixOptions :: MagixOptions
-magixOptions = MagixOptions Info "fakeScriptPath"
+magixConfig :: MagixConfig
+magixConfig = MagixConfig "fakeScriptPath" "fakeScriptName"
 
 magix :: HaskellMagix
 magix = HaskellMagix ["fake", "packages"] ["fake", "flags"]
 
+doesNotContainTemplate :: Text -> Bool
+doesNotContainTemplate = not . isInfixOf "__"
+
 spec :: Spec
 spec = do
-  describe "buildHaskellArgs" $ do
+  describe "buildHaskellNixExpression" $ do
     it "works correctly for some sample data" $ do
-      let args = buildHaskellArgs magixOptions magix
-      length args `shouldBe` 5
-      args `shouldContain` ["--build-command"]
-      args `shouldContain` ["--build-input"]
+      expr <- buildHaskellNixExpression magixConfig magix
+      expr `shouldSatisfy` doesNotContainTemplate

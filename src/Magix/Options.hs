@@ -10,7 +10,7 @@
 --
 -- Creation date: Fri Oct 18 10:37:48 2024.
 module Magix.Options
-  ( LogLevel (..),
+  ( Verbosity (..),
     MagixOptions (..),
     getMagixOptions,
   )
@@ -32,11 +32,10 @@ import Options.Applicative
     strArgument,
   )
 
-data LogLevel = Info | Debug
-  deriving (Eq, Read, Show)
+data Verbosity = Info | Debug deriving (Eq, Show)
 
 data MagixOptions = MagixOptions
-  { verbosity :: !LogLevel,
+  { verbosity :: !Verbosity,
     scriptPath :: !FilePath
   }
   deriving (Eq, Show)
@@ -49,7 +48,7 @@ pScriptPath =
   strArgument
     (metavar "SCRIPT_FILE_PATH" <> help "File path of script to run")
 
-pLogLevel :: Parser LogLevel
+pLogLevel :: Parser Verbosity
 pLogLevel =
   flag
     Info

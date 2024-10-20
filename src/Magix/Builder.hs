@@ -9,12 +9,13 @@
 -- Portability :  portable
 --
 -- Creation date: Fri Oct 18 13:36:32 2024.
-module Magix.Builder (buildArgs) where
+module Magix.Builder (buildNixExpression) where
 
-import Magix.Haskell.Builder (buildHaskellArgs)
+import Data.Text (Text)
+import Magix.Config (MagixConfig)
+import Magix.Haskell.Builder (buildHaskellNixExpression)
 import Magix.Magix (Magix (..))
-import Magix.Options (MagixOptions)
 import Prelude hiding (unwords)
 
-buildArgs :: MagixOptions -> Magix -> [String]
-buildArgs o (MHaskellMagix x) = buildHaskellArgs o x
+buildNixExpression :: MagixConfig -> Magix -> IO Text
+buildNixExpression c (MHaskellMagix x) = buildHaskellNixExpression c x
