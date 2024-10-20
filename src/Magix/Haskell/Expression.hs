@@ -11,6 +11,7 @@
 -- Creation date: Fri Oct 18 13:36:32 2024.
 module Magix.Haskell.Expression (getHaskellNixExpression) where
 
+import Data.Foldable (Foldable (..))
 import Data.Text (Text, pack, replace, unwords)
 import Data.Text.IO (readFile)
 import Magix.Config (Config (..))
@@ -18,13 +19,17 @@ import Magix.Haskell.Directives (HaskellDirectives (..))
 import Paths_magix (getDataFileName)
 import Prelude hiding (readFile, unwords)
 
+replace' :: Text -> (Text, Text) -> Text
+replace' t (x, y) = replace x y t
+
 getHaskellNixExpression :: Config -> HaskellDirectives -> IO Text
 getHaskellNixExpression c (HaskellDirectives ps fs) = do
   f <- getDataFileName "src/Magix/Haskell/Template.nix"
   e <- readFile f
-  -- TODO: Foldl.
-  let e' = replace "__SCRIPT_NAME__" (pack $ scriptName c) e
-      e'' = replace "__SCRIPT_SOURCE__" (pack $ scriptPath c) e'
-      e''' = replace "__HASKELL_PACKAGES__" (unwords ps) e''
-      e'''' = replace "__HASKELL_GHC_FLAGS__" (unwords fs) e'''
-  pure e''''
+  let rs =
+        [ ("__SCRIPT_NAME__", pack $ scriptName c),
+          ("__SCRIPT_SOURCE__", pack $ scriptPath c),
+          ("__HASKELL_PACKAGES__", unwords ps),
+          ("__HASKELL_GHC_FLAGS__", unwords fs)
+        ]
+  pure $ foldl' replace' e rs
