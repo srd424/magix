@@ -22,10 +22,10 @@ import Text.Megaparsec (MonadParsec (notFollowedBy), chunk, sepEndBy, try)
 import Text.Megaparsec.Char (newline, space1)
 import Prelude hiding (readFile)
 
-newtype BashDirectives = BashDirectives {_bashRuntimeInputs :: [Text]} deriving (Eq, Show)
+newtype BashDirectives = BashDirectives {_runtimeInputs :: [Text]} deriving (Eq, Show)
 
-pBashRuntimeInputs :: Parser BashDirectives
-pBashRuntimeInputs = BashDirectives <$> try (pDirectiveWithValues "bashRuntimeInputs")
+pRuntimeInputs :: Parser BashDirectives
+pRuntimeInputs = BashDirectives <$> try (pDirectiveWithValues "runtimeInputs")
 
 addBashDirective :: BashDirectives -> BashDirectives -> BashDirectives
 addBashDirective (BashDirectives ps) (BashDirectives ps') =
@@ -35,7 +35,7 @@ pBashDirectives :: Parser BashDirectives
 pBashDirectives = do
   pMagixDirective "bash"
   space1
-  ds <- sepEndBy pBashRuntimeInputs newline
+  ds <- sepEndBy pRuntimeInputs newline
   notFollowedBy $ chunk "#!"
   let magix = foldl' addBashDirective (BashDirectives []) ds
   pure magix

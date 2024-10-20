@@ -25,7 +25,7 @@ minimal =
   unlines
     [ "#!magix haskell",
       "#!haskellPackages bytestring",
-      "#!haskellGhcFlags -threaded"
+      "#!ghcFlags -threaded"
     ]
 
 multiple :: Text
@@ -34,10 +34,10 @@ multiple =
     [ "#!magix haskell",
       "#!haskellPackages a",
       "#!haskellPackages b c",
-      "#!haskellGhcFlags 1",
+      "#!ghcFlags 1",
       "#!haskellPackages d e f",
-      "#!haskellGhcFlags 2",
-      "#!haskellGhcFlags 3 4"
+      "#!ghcFlags 2",
+      "#!ghcFlags 3 4"
     ]
 
 spec :: Spec

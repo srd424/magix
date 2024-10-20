@@ -25,27 +25,27 @@ import Prelude hiding (readFile)
 
 data HaskellDirectives = HaskellDirectives
   { _haskellPackages :: ![Text],
-    _haskellGhcFlags :: ![Text]
+    _ghcFlags :: ![Text]
   }
   deriving (Eq, Show)
 
 data HaskellDirective
   = HaskellPackages ![Text]
-  | HaskellGhcFlags ![Text]
+  | GhcFlags ![Text]
 
 pHaskellPackages :: Parser HaskellDirective
 pHaskellPackages = HaskellPackages <$> try (pDirectiveWithValues "haskellPackages")
 
-pHaskellGhcFlags :: Parser HaskellDirective
-pHaskellGhcFlags = HaskellGhcFlags <$> try (pDirectiveWithValues "haskellGhcFlags")
+pGhcFlags :: Parser HaskellDirective
+pGhcFlags = GhcFlags <$> try (pDirectiveWithValues "ghcFlags")
 
 pHaskellDirective :: Parser HaskellDirective
-pHaskellDirective = pHaskellPackages <|> pHaskellGhcFlags
+pHaskellDirective = pHaskellPackages <|> pGhcFlags
 
 addHaskellDirective :: HaskellDirectives -> HaskellDirective -> HaskellDirectives
 addHaskellDirective (HaskellDirectives ps fs) (HaskellPackages ps') =
   HaskellDirectives (ps <> ps') fs
-addHaskellDirective (HaskellDirectives ps fs) (HaskellGhcFlags fs') =
+addHaskellDirective (HaskellDirectives ps fs) (GhcFlags fs') =
   HaskellDirectives ps (fs <> fs')
 
 pHaskellDirectives :: Parser HaskellDirectives

@@ -29,6 +29,6 @@ getBashNixExpression c (BashDirectives ps) = do
   let rs =
         [ ("__SCRIPT_NAME__", pack $ scriptName c),
           ("__SCRIPT_SOURCE__", pack $ scriptPath c),
-          ("__BASH_RUNTIME_INPUTS__", unwords ps)
+          ("__RUNTIME_INPUTS__", unwords ps)
         ]
   pure $ foldl' replace' e rs

@@ -21,7 +21,7 @@ pkgs.stdenv.mkDerivation {
 
     mkdir bin
     ln -s $src $SCRIPT_SOURCE_HS
-    ghc __HASKELL_GHC_FLAGS__ -o $OUT $SCRIPT_SOURCE_HS
+    ghc __GHC_FLAGS__ -o $OUT $SCRIPT_SOURCE_HS
   '';
 
   installPhase = ''

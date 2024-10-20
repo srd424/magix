@@ -30,6 +30,6 @@ getHaskellNixExpression c (HaskellDirectives ps fs) = do
         [ ("__SCRIPT_NAME__", pack $ scriptName c),
           ("__SCRIPT_SOURCE__", pack $ scriptPath c),
           ("__HASKELL_PACKAGES__", unwords ps),
-          ("__HASKELL_GHC_FLAGS__", unwords fs)
+          ("__GHC_FLAGS__", unwords fs)
         ]
   pure $ foldl' replace' e rs
