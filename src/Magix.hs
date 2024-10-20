@@ -18,11 +18,11 @@ module Magix
     -- Directives.
     getDirectives,
     -- Expression.
-    buildNixExpression,
+    getNixExpression,
   )
 where
 
-import Magix.Builder (buildNixExpression)
 import Magix.Config (getConfig)
 import Magix.Directives (getDirectives)
+import Magix.Expression (getNixExpression)
 import Magix.Options (Options (..), getOptions)

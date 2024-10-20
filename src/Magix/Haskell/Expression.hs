@@ -1,5 +1,5 @@
 -- |
--- Module      :  Magix.Haskell.Builder
+-- Module      :  Magix.Haskell.Expression
 -- Description :  Build Haskell command lines
 -- Copyright   :  2024 Dominik Schrempf
 -- License     :  GPL-3.0-or-later
@@ -9,7 +9,7 @@
 -- Portability :  portable
 --
 -- Creation date: Fri Oct 18 13:36:32 2024.
-module Magix.Haskell.Builder (buildHaskellNixExpression) where
+module Magix.Haskell.Expression (getHaskellNixExpression) where
 
 import Data.Text (Text, pack, replace, unwords)
 import Data.Text.IO (readFile)
@@ -18,8 +18,8 @@ import Magix.Haskell.Directives (HaskellDirectives (..))
 import Paths_magix (getDataFileName)
 import Prelude hiding (readFile, unwords)
 
-buildHaskellNixExpression :: Config -> HaskellDirectives -> IO Text
-buildHaskellNixExpression c (HaskellDirectives ps fs) = do
+getHaskellNixExpression :: Config -> HaskellDirectives -> IO Text
+getHaskellNixExpression c (HaskellDirectives ps fs) = do
   f <- getDataFileName "src/Magix/Haskell/Template.nix"
   e <- readFile f
   -- TODO: Foldl.

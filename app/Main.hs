@@ -18,9 +18,9 @@ import Data.Text (unpack)
 import Data.Text.IO (readFile)
 import Magix
   ( Options (..),
-    buildNixExpression,
     getConfig,
     getDirectives,
+    getNixExpression,
     getOptions,
   )
 import Magix.Options (Verbosity (..))
@@ -75,6 +75,6 @@ main = do
   let dirs = getDirectives p f
   logD $ "Directives are " <> show dirs
 
-  logD "Building Nix expression"
-  expr <- buildNixExpression conf dirs
-  logD $ "Built Nix expression is " <> unpack expr
+  logD "Getting Nix expression"
+  expr <- getNixExpression conf dirs
+  logD $ "Nix expression is " <> unpack expr

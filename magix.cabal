@@ -52,12 +52,12 @@ library
   import:          common, lib
   exposed-modules:
     Magix
-    Magix.Builder
     Magix.Config
     Magix.Directives
     Magix.Directives.Common
-    Magix.Haskell.Builder
+    Magix.Expression
     Magix.Haskell.Directives
+    Magix.Haskell.Expression
     Magix.Options
 
   hs-source-dirs:  src
@@ -92,8 +92,8 @@ test-suite test-magix
   other-modules:
     Magix.Directives.CommonSpec
     Magix.DirectivesSpec
-    Magix.Haskell.BuilderSpec
     Magix.Haskell.DirectivesSpec
+    Magix.Haskell.ExpressionSpec
 
   autogen-modules:
   ghc-options:
