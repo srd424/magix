@@ -30,7 +30,7 @@ import Prelude hiding (writeFile)
 showHash :: Int -> String
 showHash h
   | h < 0 = '1' : showHex (-h) ""
-  | otherwise = '-' : showHex h ""
+  | otherwise = '0' : showHex h ""
 
 getBuildDir :: Config -> IO FilePath
 getBuildDir (Config _ n h) = getUserCacheFile "magix" $ showHash h <> "-" <> n <> "-build"

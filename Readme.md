@@ -10,4 +10,5 @@ simple and stupid. Magix is a tiny wrapper around `nix-build`.
 -   Clean.
 -   More tests.
 -   Bash with runtime dependencies.
+-   Emacs auto mode detection.
 
