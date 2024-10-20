@@ -4,4 +4,5 @@ simple and stupid. Magix is a tiny wrapper around =nix-script=.
 
 * Ideas
 - Clean.
+- More tests.
 - Bash with runtime dependencies.

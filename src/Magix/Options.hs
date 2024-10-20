@@ -19,19 +19,17 @@ where
 import Options.Applicative
   ( Parser,
     ParserInfo,
-    auto,
     execParser,
+    flag,
     fullDesc,
     help,
     helper,
     info,
     long,
     metavar,
-    option,
     progDesc,
     short,
     strArgument,
-    value,
   )
 
 data LogLevel = Info | Debug
@@ -53,13 +51,12 @@ pScriptPath =
 
 pLogLevel :: Parser LogLevel
 pLogLevel =
-  option
-    auto
-    ( long "verbosity"
+  flag
+    Info
+    Debug
+    ( long "verbose"
         <> short 'v'
-        <> value Info
-        <> metavar "LOG_LEVEL"
-        <> help "Log level (Info or Debug)"
+        <> help "Print debugging messages"
     )
 
 desc :: String
