@@ -12,10 +12,10 @@
 module Magix.Builder (buildNixExpression) where
 
 import Data.Text (Text)
-import Magix.Config (MagixConfig)
+import Magix.Config (Config (..))
+import Magix.Directives (Directives (..))
 import Magix.Haskell.Builder (buildHaskellNixExpression)
-import Magix.Magix (Magix (..))
 import Prelude hiding (unwords)
 
-buildNixExpression :: MagixConfig -> Magix -> IO Text
-buildNixExpression c (MHaskellMagix x) = buildHaskellNixExpression c x
+buildNixExpression :: Config -> Directives -> IO Text
+buildNixExpression c (Haskell x) = buildHaskellNixExpression c x

@@ -15,12 +15,13 @@ module Main
 where
 
 import Data.Text (unpack)
+import Data.Text.IO (readFile)
 import Magix
-  ( MagixOptions (..),
+  ( Options (..),
     buildNixExpression,
+    getConfig,
     getDirectives,
-    getMagixConfig,
-    getMagixOptions,
+    getOptions,
   )
 import Magix.Options (Verbosity (..))
 import System.IO (Handle, stderr)
@@ -38,6 +39,7 @@ import System.Log.Logger
     setLevel,
     updateGlobalLogger,
   )
+import Prelude hiding (readFile)
 
 withFormatter :: GenericHandler Handle -> GenericHandler Handle
 withFormatter handler = setFormatter handler formatter
@@ -46,7 +48,7 @@ withFormatter handler = setFormatter handler formatter
 
 main :: IO ()
 main = do
-  opts <- getMagixOptions
+  opts <- getOptions
 
   let prio = case verbosity opts of
         Info -> INFO
@@ -59,13 +61,17 @@ main = do
 
   logD $ "Options are " <> show opts
 
-  let conf = getMagixConfig opts
+  let p = scriptPath opts
+  logD $ "Reading script at path " <> p
+  f <- readFile p
+
+  let conf = getConfig p f
   logD $ "Magix configuration is " <> show conf
 
   logD "Parsing directives"
-  magix <- getDirectives $ scriptPath opts
-  logD $ "Directives are " <> show magix
+  let dirs = getDirectives p f
+  logD $ "Directives are " <> show dirs
 
   logD "Building Nix expression"
-  expr <- buildNixExpression conf magix
+  expr <- buildNixExpression conf dirs
   logD $ "Built Nix expression is " <> unpack expr

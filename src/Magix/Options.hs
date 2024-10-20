@@ -11,8 +11,8 @@
 -- Creation date: Fri Oct 18 10:37:48 2024.
 module Magix.Options
   ( Verbosity (..),
-    MagixOptions (..),
-    getMagixOptions,
+    Options (..),
+    getOptions,
   )
 where
 
@@ -34,14 +34,14 @@ import Options.Applicative
 
 data Verbosity = Info | Debug deriving (Eq, Show)
 
-data MagixOptions = MagixOptions
+data Options = Options
   { verbosity :: !Verbosity,
     scriptPath :: !FilePath
   }
   deriving (Eq, Show)
 
-pMagixOptions :: Parser MagixOptions
-pMagixOptions = MagixOptions <$> pLogLevel <*> pScriptPath
+pOptions :: Parser Options
+pOptions = Options <$> pLogLevel <*> pScriptPath
 
 pScriptPath :: Parser FilePath
 pScriptPath =
@@ -61,8 +61,8 @@ pLogLevel =
 desc :: String
 desc = "Run and cache compiled scripts using the Nix package manager"
 
-magixOptionsParser :: ParserInfo MagixOptions
-magixOptionsParser = info (helper <*> pMagixOptions) (fullDesc <> progDesc desc)
+optionsParser :: ParserInfo Options
+optionsParser = info (helper <*> pOptions) (fullDesc <> progDesc desc)
 
-getMagixOptions :: IO MagixOptions
-getMagixOptions = execParser magixOptionsParser
+getOptions :: IO Options
+getOptions = execParser optionsParser

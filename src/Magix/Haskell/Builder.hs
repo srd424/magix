@@ -13,13 +13,13 @@ module Magix.Haskell.Builder (buildHaskellNixExpression) where
 
 import Data.Text (Text, pack, replace, unwords)
 import Data.Text.IO (readFile)
-import Magix.Config (MagixConfig (..))
-import Magix.Haskell.Directives (HaskellMagix (..))
+import Magix.Config (Config (..))
+import Magix.Haskell.Directives (HaskellDirectives (..))
 import Paths_magix (getDataFileName)
 import Prelude hiding (readFile, unwords)
 
-buildHaskellNixExpression :: MagixConfig -> HaskellMagix -> IO Text
-buildHaskellNixExpression c (HaskellMagix ps fs) = do
+buildHaskellNixExpression :: Config -> HaskellDirectives -> IO Text
+buildHaskellNixExpression c (HaskellDirectives ps fs) = do
   f <- getDataFileName "src/Magix/Haskell/Template.nix"
   e <- readFile f
   -- TODO: Foldl.

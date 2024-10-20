@@ -26,6 +26,7 @@ magixConfig = MagixConfig "fakeScriptPath" "fakeScriptName"
 magix :: HaskellMagix
 magix = HaskellMagix ["fake", "packages"] ["fake", "flags"]
 
+-- NOTE: Here we could be a bit more rigorous and parse proper templates.
 doesNotContainTemplate :: Text -> Bool
 doesNotContainTemplate = not . isInfixOf "__"
 

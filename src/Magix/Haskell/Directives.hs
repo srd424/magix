@@ -10,8 +10,8 @@
 --
 -- Creation date: Fri Oct 18 09:17:40 2024.
 module Magix.Haskell.Directives
-  ( HaskellMagix (..),
-    pHaskellMagix,
+  ( HaskellDirectives (..),
+    pHaskellDirectives,
   )
 where
 
@@ -23,7 +23,7 @@ import Text.Megaparsec (MonadParsec (notFollowedBy), chunk, sepEndBy, try)
 import Text.Megaparsec.Char (newline, space1)
 import Prelude hiding (readFile)
 
-data HaskellMagix = HaskellMagix
+data HaskellDirectives = HaskellDirectives
   { _haskellPackages :: ![Text],
     _haskellGhcFlags :: ![Text]
   }
@@ -42,17 +42,17 @@ pHaskellGhcFlags = HaskellGhcFlags <$> try (pDirectiveWithValues "haskellGhcFlag
 pHaskellDirective :: Parser HaskellDirective
 pHaskellDirective = pHaskellPackages <|> pHaskellGhcFlags
 
-addHaskellDirective :: HaskellMagix -> HaskellDirective -> HaskellMagix
-addHaskellDirective (HaskellMagix ps fs) (HaskellPackages ps') =
-  HaskellMagix (ps <> ps') fs
-addHaskellDirective (HaskellMagix ps fs) (HaskellGhcFlags fs') =
-  HaskellMagix ps (fs <> fs')
+addHaskellDirective :: HaskellDirectives -> HaskellDirective -> HaskellDirectives
+addHaskellDirective (HaskellDirectives ps fs) (HaskellPackages ps') =
+  HaskellDirectives (ps <> ps') fs
+addHaskellDirective (HaskellDirectives ps fs) (HaskellGhcFlags fs') =
+  HaskellDirectives ps (fs <> fs')
 
-pHaskellMagix :: Parser HaskellMagix
-pHaskellMagix = do
+pHaskellDirectives :: Parser HaskellDirectives
+pHaskellDirectives = do
   pMagixDirective "haskell"
   space1
   ds <- sepEndBy pHaskellDirective newline
   notFollowedBy $ chunk "#!"
-  let magix = foldl' addHaskellDirective (HaskellMagix [] []) ds
+  let magix = foldl' addHaskellDirective (HaskellDirectives [] []) ds
   pure magix

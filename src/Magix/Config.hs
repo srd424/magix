@@ -8,21 +8,24 @@
 -- Stability   :  experimental
 -- Portability :  portable
 --
--- Creation date: Sun Oct 20 08:35:31 2024.
+-- Creation date: Fri Oct 18 09:12:29 2024.
 module Magix.Config
-  ( MagixConfig (..),
-    getMagixConfig,
+  ( Config (..),
+    getConfig,
   )
 where
 
-import Magix.Options (MagixOptions (MagixOptions))
+import Data.Hashable (hash)
+import Data.Text (Text)
 import System.FilePath (takeBaseName)
+import Prelude hiding (readFile)
 
-data MagixConfig = MagixConfig
+data Config = Config
   { scriptPath :: !FilePath,
-    scriptName :: !String
+    scriptName :: !String,
+    scriptHash :: !Int
   }
   deriving (Eq, Show)
 
-getMagixConfig :: MagixOptions -> MagixConfig
-getMagixConfig (MagixOptions _ p) = MagixConfig p (takeBaseName p)
+getConfig :: FilePath -> Text -> Config
+getConfig p x = Config p (takeBaseName p) (hash x)
