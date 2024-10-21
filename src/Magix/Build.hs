@@ -10,8 +10,7 @@
 --
 -- Creation date: Sun Oct 20 09:48:50 2024.
 module Magix.Build
-  ( getResultDir,
-    BuildStatus (..),
+  ( BuildStatus (..),
     getBuildStatus,
     build,
     removeBuild,
@@ -22,7 +21,7 @@ import Control.Monad (when)
 import Data.Text (Text)
 import Data.Text.IO (writeFile)
 import Magix.Config (Config (..))
-import Numeric (showHex)
+import Magix.Paths (getBuildDir, getExprPath, getResultDir)
 import System.Directory
   ( createDirectoryIfMissing,
     doesDirectoryExist,
@@ -30,24 +29,8 @@ import System.Directory
     removeDirectoryLink,
     removeDirectoryRecursive,
   )
-import System.Environment.XDG.BaseDir (getUserCacheFile)
-import System.FilePath ((</>))
 import System.Process (callProcess)
 import Prelude hiding (writeFile)
-
-showHash :: Int -> String
-showHash h
-  | h < 0 = '1' : showHex (-h) ""
-  | otherwise = '0' : showHex h ""
-
-getBuildDir :: Config -> IO FilePath
-getBuildDir (Config _ n h) = getUserCacheFile "magix" $ showHash h <> "-" <> n <> "-build"
-
-getExprPath :: FilePath -> FilePath
-getExprPath buildDir = buildDir </> "default.nix"
-
-getResultDir :: Config -> IO FilePath
-getResultDir (Config _ n h) = getUserCacheFile "magix" $ showHash h <> "-" <> n <> "-result"
 
 data BuildStatus = HasBeenBuilt | NeedToBuild
 

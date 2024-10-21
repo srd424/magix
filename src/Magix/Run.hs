@@ -14,9 +14,9 @@ module Magix.Run
   )
 where
 
-import Magix.Build (getResultDir)
 import Magix.Config (Config (scriptName))
 import Magix.Options (Options (scriptArgs))
+import Magix.Paths (getResultDir)
 import System.FilePath ((</>))
 import System.Process (callProcess)
 

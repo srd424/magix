@@ -64,6 +64,7 @@ library
     Magix.Languages.Haskell.Directives
     Magix.Languages.Haskell.Expression
     Magix.Options
+    Magix.Paths
     Magix.Run
 
   hs-source-dirs:  src
