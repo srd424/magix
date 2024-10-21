@@ -14,11 +14,13 @@ module Magix.Languages.Bash.ExpressionSpec
   )
 where
 
-import Data.Text (Text, isInfixOf)
+import Data.Text (Text)
 import Magix.Config (Config (..))
 import Magix.Languages.Bash.Directives (BashDirectives (..))
 import Magix.Languages.Bash.Expression (getBashNixExpression)
+import Magix.Languages.TestHelpers (containsSpaceSeparatedValues, doesNotContainTemplates)
 import Test.Hspec (Spec, describe, it, shouldSatisfy)
+import Prelude hiding (unwords)
 
 config :: Config
 config =
@@ -32,16 +34,16 @@ config =
     "fakeBuildExprPath"
     "fakeResultDir"
 
-directives :: BashDirectives
-directives = BashDirectives ["fake", "inputs"]
+runtimeInputs :: [Text]
+runtimeInputs = ["fake", "inputs"]
 
--- NOTE: Here we could be a bit more rigorous and parse proper templates.
-doesNotContainTemplate :: Text -> Bool
-doesNotContainTemplate = not . isInfixOf "__"
+directives :: BashDirectives
+directives = BashDirectives runtimeInputs
 
 spec :: Spec
 spec = do
   describe "getBashNixExpression" $ do
     it "works correctly for some sample data" $ do
       expr <- getBashNixExpression config directives
-      expr `shouldSatisfy` doesNotContainTemplate
+      expr `shouldSatisfy` doesNotContainTemplates
+      expr `shouldSatisfy` containsSpaceSeparatedValues runtimeInputs

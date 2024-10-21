@@ -107,6 +107,7 @@ test-suite test-magix
     Magix.Languages.Bash.ExpressionSpec
     Magix.Languages.Haskell.DirectivesSpec
     Magix.Languages.Haskell.ExpressionSpec
+    Magix.Languages.TestHelpers
 
   autogen-modules:
   ghc-options:

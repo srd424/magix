@@ -14,11 +14,13 @@ module Magix.Languages.Haskell.ExpressionSpec
   )
 where
 
-import Data.Text (Text, isInfixOf)
+import Data.Text (Text)
 import Magix.Config (Config (..))
 import Magix.Languages.Haskell.Directives (HaskellDirectives (..))
 import Magix.Languages.Haskell.Expression (getHaskellNixExpression)
+import Magix.Languages.TestHelpers (containsSpaceSeparatedValues, doesNotContainTemplates)
 import Test.Hspec (Spec, describe, it, shouldSatisfy)
+import Prelude hiding (unwords)
 
 config :: Config
 config =
@@ -32,16 +34,20 @@ config =
     "fakeBuildExprPath"
     "fakeResultDir"
 
-directives :: HaskellDirectives
-directives = HaskellDirectives ["fake", "packages"] ["fake", "flags"]
+haskellPackages :: [Text]
+haskellPackages = ["fake", "packages"]
 
--- NOTE: Here we could be a bit more rigorous and parse proper templates.
-doesNotContainTemplate :: Text -> Bool
-doesNotContainTemplate = not . isInfixOf "__"
+ghcFlags :: [Text]
+ghcFlags = ["fake", "flags"]
+
+directives :: HaskellDirectives
+directives = HaskellDirectives haskellPackages ghcFlags
 
 spec :: Spec
 spec = do
   describe "getHaskellNixExpression" $ do
     it "works correctly for some sample data" $ do
       expr <- getHaskellNixExpression config directives
-      expr `shouldSatisfy` doesNotContainTemplate
+      expr `shouldSatisfy` doesNotContainTemplates
+      expr `shouldSatisfy` containsSpaceSeparatedValues haskellPackages
+      expr `shouldSatisfy` containsSpaceSeparatedValues ghcFlags
