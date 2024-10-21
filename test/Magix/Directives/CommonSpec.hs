@@ -14,17 +14,31 @@ module Magix.Directives.CommonSpec
   )
 where
 
-import Data.Text (Text)
-import Magix.Directives.Common (pMagixDirective)
-import Test.Hspec (Spec, describe, it, shouldBe)
+import Data.Either (isLeft)
+import Magix.Directives.Common (pDirectiveWithValues, pMagixDirective)
+import Test.Hspec (Spec, describe, it, shouldBe, shouldSatisfy)
 import Text.Megaparsec (parse)
 import Prelude hiding (readFile)
 
-haskellMagixDirective :: Text
-haskellMagixDirective = "#!magix haskell"
-
 spec :: Spec
 spec = do
+  describe "pDirectiveWithValues" $ do
+    it "parses directives with one or more values" $ do
+      parse (pDirectiveWithValues "foo") "" "#!foo bar" `shouldBe` Right ["bar"]
+      parse (pDirectiveWithValues "foo") "" "#!foo bar baz" `shouldBe` Right ["bar", "baz"]
+    it "fails on directives without a value" $ do
+      parse (pDirectiveWithValues "foo") "" "#!foo " `shouldSatisfy` isLeft
+      parse (pDirectiveWithValues "foo") "" "#!foo" `shouldSatisfy` isLeft
+      parse (pDirectiveWithValues "foo") "" "#!foo\n" `shouldSatisfy` isLeft
+      parse (pDirectiveWithValues "foo") "" "#!\n" `shouldSatisfy` isLeft
+      parse (pDirectiveWithValues "foo") "" "#! " `shouldSatisfy` isLeft
+
   describe "pMagixDirective" $ do
-    it "parses a sample Magix directive" $
-      parse (pMagixDirective "haskell") "" haskellMagixDirective `shouldBe` Right ()
+    it "parses sample Magix directives" $ do
+      parse (pMagixDirective "haskell") "" "#!magix haskell" `shouldBe` Right ()
+      parse (pMagixDirective "bash") "" "#!magix bash" `shouldBe` Right ()
+
+    it "fails on wrong Magix directives" $ do
+      parse (pMagixDirective "haskell") "" "#!magic haskell" `shouldSatisfy` isLeft
+      parse (pMagixDirective "bash") "" "#!magix haskell" `shouldSatisfy` isLeft
+      parse (pMagixDirective "foo") "" "#!magic" `shouldSatisfy` isLeft

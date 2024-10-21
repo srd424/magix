@@ -11,7 +11,6 @@
 -- Creation date: Fri Oct 18 09:17:40 2024.
 module Magix.Directives.Common
   ( Parser,
-    pDirectiveWithValue,
     pDirectiveWithValues,
     pMagixDirective,
   )
