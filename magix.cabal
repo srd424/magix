@@ -103,6 +103,8 @@ test-suite test-magix
   other-modules:
     Magix.Directives.CommonSpec
     Magix.DirectivesSpec
+    Magix.Languages.Bash.DirectivesSpec
+    Magix.Languages.Bash.ExpressionSpec
     Magix.Languages.Haskell.DirectivesSpec
     Magix.Languages.Haskell.ExpressionSpec
 
