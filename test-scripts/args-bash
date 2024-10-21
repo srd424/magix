@@ -2,4 +2,4 @@
 #!magix bash
 
 echo "Command basename is: $0"
-echo "Command line arguments are: $@"
+echo "Command line arguments are: $*"
