@@ -37,18 +37,18 @@ import Options.Applicative.Types (ArgPolicy (..))
 
 data Verbosity = Info | Debug deriving (Eq, Show)
 
-data Rebuild = ReuseBuildIfAvailable | ForceRebuild deriving (Eq, Show)
+data Rebuild = ReuseBuildIfAvailable | ForceBuild deriving (Eq, Show)
 
 data Options = Options
   { verbosity :: !Verbosity,
-    rebuild :: !Rebuild,
+    forceBuild :: !Rebuild,
     scriptPath :: !FilePath,
     scriptArgs :: ![String]
   }
   deriving (Eq, Show)
 
 pOptions :: Parser Options
-pOptions = Options <$> pLogLevel <*> pForceRebuild <*> pScriptPath <*> pScriptArgs
+pOptions = Options <$> pLogLevel <*> pForceBuild <*> pScriptPath <*> pScriptArgs
 
 pLogLevel :: Parser Verbosity
 pLogLevel =
@@ -60,14 +60,14 @@ pLogLevel =
         <> help "Print debugging messages"
     )
 
-pForceRebuild :: Parser Rebuild
-pForceRebuild =
+pForceBuild :: Parser Rebuild
+pForceBuild =
   flag
     ReuseBuildIfAvailable
-    ForceRebuild
-    ( long "force-rebuild"
+    ForceBuild
+    ( long "force-build"
         <> short 'f'
-        <> help "Force rebuild of the Nix expression"
+        <> help "Force build, even when cached build exists"
     )
 
 pScriptPath :: Parser FilePath

@@ -43,6 +43,8 @@ getBuildStatus c = do
 
 build :: Config -> Text -> IO ()
 build c e = do
+  -- Remove any previous builds.
+  removeBuild c
   -- Create sanitized link to script.
   createSymbolicLink (scriptPath c) (scriptLinkPath c)
   -- Build directory.

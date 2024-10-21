@@ -14,7 +14,6 @@ module Main
   )
 where
 
-import Control.Monad (when)
 import Data.Text (unpack)
 import Data.Text.IO (readFile)
 import Magix
@@ -26,8 +25,9 @@ import Magix
     getDirectives,
     getNixExpression,
     getOptions,
-    removeBuild,
   )
+import Magix.Config (Config)
+import Magix.Directives (Directives)
 import Magix.Options (Rebuild (..), Verbosity (..))
 import Magix.Run (run)
 import System.IO (Handle, stderr)
@@ -64,12 +64,23 @@ setupLogger v = do
   saveGlobalLogger logger
   pure logger
 
+newBuild :: Config -> Directives -> IO ()
+newBuild conf dirs = do
+  logger <- getLogger "Magix.Main"
+  let logD = logL logger DEBUG
+      logI = logL logger INFO
+  logD "Getting Nix expression"
+  expr <- getNixExpression conf dirs
+  logD $ "Nix expression is " <> unpack expr
+  logI "Building Nix expression"
+  build conf expr
+  logD "Built Nix expression"
+
 main :: IO ()
 main = do
   opts <- getOptions
   logger <- setupLogger (verbosity opts)
-  let logI = logL logger INFO
-      logD = logL logger DEBUG
+  let logD = logL logger DEBUG
       logE = logL logger ERROR
 
   logD $ "Options are " <> show opts
@@ -87,23 +98,19 @@ main = do
     Right ds -> pure ds
   logD $ "Directives are " <> show dirs
 
-  when (rebuild opts == ForceRebuild) $ do
-    logD "Removing existing build"
-    removeBuild conf
-    logD "Removed existing build"
-
-  logD "Checking build status"
-  buildStatus <- getBuildStatus conf
-  case buildStatus of
-    HasBeenBuilt -> logD "Script has already been built"
-    NeedToBuild -> do
-      logD "Need to build"
-      logD "Getting Nix expression"
-      expr <- getNixExpression conf dirs
-      logD $ "Nix expression is " <> unpack expr
-      logI "Building Nix expression"
-      build conf expr
-      logD "Built Nix expression"
+  case forceBuild opts of
+    ForceBuild -> do
+      logD "Force build"
+      newBuild conf dirs
+    ReuseBuildIfAvailable -> do
+      logD "Reuse build if available"
+      logD "Checking build status"
+      buildStatus <- getBuildStatus conf
+      case buildStatus of
+        HasBeenBuilt -> logD "Script has already been built"
+        NeedToBuild -> do
+          logD "Need to build"
+          newBuild conf dirs
 
   logD "Running"
   run opts conf
