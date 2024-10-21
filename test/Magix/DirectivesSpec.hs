@@ -14,32 +14,46 @@ module Magix.DirectivesSpec
   )
 where
 
-import Data.Either (isRight)
+import Data.Either (isLeft, isRight)
 import Data.Text (Text)
 import Data.Text.IO (readFile)
 import Magix.Directives (Directives (..), pDirectives, pShebang)
+import Magix.Languages.Bash.Directives (BashDirectives (..))
 import Magix.Languages.Haskell.Directives (HaskellDirectives (..))
 import Test.Hspec (Spec, describe, it, shouldBe, shouldSatisfy)
 import Text.Megaparsec (parse)
 import Prelude hiding (readFile)
 
-magixShebang :: Text
-magixShebang = "#!/usr/bin/env magix"
+fnMinimalBash :: FilePath
+fnMinimalBash = "test-scripts/minimal-bash"
 
-fnMinimal :: FilePath
-fnMinimal = "test-scripts/minimal-haskell"
+readMinimalBash :: IO Text
+readMinimalBash = readFile fnMinimalBash
 
-readMinimal :: IO Text
-readMinimal = readFile fnMinimal
+fnMinimalHaskell :: FilePath
+fnMinimalHaskell = "test-scripts/minimal-haskell"
+
+readMinimalHaskell :: IO Text
+readMinimalHaskell = readFile fnMinimalHaskell
 
 spec :: Spec
 spec = do
   describe "pShebang" $ do
     it "parses the shebang" $
-      parse pShebang "" magixShebang `shouldSatisfy` isRight
+      parse pShebang "" "#!/usr/bin/env magix" `shouldSatisfy` isRight
+    it "fails on wrong shebangs" $ do
+      parse pShebang "" " #!/usr/bin/env magix" `shouldSatisfy` isLeft
+      parse pShebang "" "#! /usr/bin/env magix" `shouldSatisfy` isLeft
+      parse pShebang "" "#!/usr/bin/env magis" `shouldSatisfy` isLeft
+      parse pShebang "" "#!/usr/bin/env" `shouldSatisfy` isLeft
+      parse pShebang "" "#/usr/bin/env magix" `shouldSatisfy` isLeft
+      parse pShebang "" "#/usr/bin/env3magix" `shouldSatisfy` isLeft
 
   describe "pDirectives" $ do
-    it "parses a minimal sample script" $ do
-      minimal <- readMinimal
-      parse pDirectives fnMinimal minimal
+    it "parses minimal sample scripts" $ do
+      minimalHaskell <- readMinimalHaskell
+      parse pDirectives fnMinimalHaskell minimalHaskell
         `shouldBe` Right (Haskell (HaskellDirectives ["bytestring"] ["-threaded"]))
+      minimalBash <- readMinimalBash
+      parse pDirectives fnMinimalBash minimalBash
+        `shouldBe` Right (Bash (BashDirectives ["jq"]))

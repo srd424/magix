@@ -18,7 +18,7 @@ import Data.Text (Text, unlines)
 import Magix.Languages.Haskell.Directives (HaskellDirectives (..), pHaskellDirectives)
 import Test.Hspec (Spec, describe, it, shouldBe)
 import Text.Megaparsec (parse)
-import Prelude hiding (readFile, unlines)
+import Prelude hiding (unlines)
 
 minimal :: Text
 minimal =
