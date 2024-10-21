@@ -21,7 +21,6 @@ import Control.Monad (when)
 import Data.Text (Text)
 import Data.Text.IO (writeFile)
 import Magix.Config (Config (..))
-import Magix.Paths (getBuildDir, getExprPath, getResultDir)
 import System.Directory
   ( createDirectoryIfMissing,
     doesDirectoryExist,
@@ -36,29 +35,24 @@ data BuildStatus = HasBeenBuilt | NeedToBuild
 
 getBuildStatus :: Config -> IO BuildStatus
 getBuildStatus c = do
-  resultDir <- getResultDir c
-  resultDirExists <- doesPathExist resultDir
+  resultDirExists <- doesPathExist (resultDir c)
   pure $ if resultDirExists then HasBeenBuilt else NeedToBuild
 
 build :: Config -> Text -> IO ()
 build c e = do
   -- Build directory.
-  buildDir <- getBuildDir c
-  createDirectoryIfMissing True buildDir
+  createDirectoryIfMissing True (buildDir c)
   -- Expression.
-  let exprPath = getExprPath buildDir
+  let exprPath = buildExprPath c
   writeFile exprPath e
   -- Build.
-  resultDir <- getResultDir c
-  callProcess "nix-build" ["--out-link", resultDir, buildDir]
+  callProcess "nix-build" ["--out-link", resultDir c, buildDir c]
 
 removeBuild :: Config -> IO ()
 removeBuild c = do
   -- Build directory.
-  buildDir <- getBuildDir c
-  buildDirExists <- doesDirectoryExist buildDir
-  when buildDirExists $ removeDirectoryRecursive buildDir
+  buildDirExists <- doesDirectoryExist (buildDir c)
+  when buildDirExists $ removeDirectoryRecursive (buildDir c)
   -- Result directory.
-  resultDir <- getResultDir c
-  resultDirExists <- doesDirectoryExist resultDir
-  when resultDirExists $ removeDirectoryLink resultDir
+  resultDirExists <- doesDirectoryExist (resultDir c)
+  when resultDirExists $ removeDirectoryLink (resultDir c)

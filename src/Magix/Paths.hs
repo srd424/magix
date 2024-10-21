@@ -10,42 +10,40 @@
 --
 -- Creation date: Mon Oct 21 17:06:03 2024.
 module Magix.Paths
-  ( getBuildDir,
-    getExprPath,
+  ( getScriptLinkPath,
+    getBuildDir,
+    getBuildExprPath,
     getResultDir,
-    getLinkPath,
   )
 where
 
 import Data.Char (isAlphaNum)
-import Magix.Config (Config (..))
 import Numeric (showHex)
-import System.Environment.XDG.BaseDir (getUserCacheFile)
 import System.FilePath ((</>))
 
 showHash :: Int -> String
-showHash h
-  | h < 0 = '1' : showHex (-h) ""
-  | otherwise = '0' : showHex h ""
-
-getBuildDir :: Config -> IO FilePath
-getBuildDir (Config _ n h) = getUserCacheFile "magix" $ showHash h <> "-" <> n <> "-build"
-
-getExprPath :: FilePath -> FilePath
-getExprPath buildDir = buildDir </> "default.nix"
-
-getResultDir :: Config -> IO FilePath
-getResultDir (Config _ n h) = getUserCacheFile "magix" $ showHash h <> "-" <> n <> "-result"
+showHash hash
+  | hash < 0 = '1' : showHex (-hash) ""
+  | otherwise = '0' : showHex hash ""
 
 replaceProblematicChars :: Char -> Char
 replaceProblematicChars c
   | isAlphaNum c = c
   | otherwise = '-'
 
-getLinkPath :: Config -> IO FilePath
-getLinkPath (Config _ n h) =
-  getUserCacheFile "magix" $
-    showHash h
+getScriptLinkPath :: FilePath -> String -> Int -> FilePath
+getScriptLinkPath cacheDir name hash =
+  cacheDir
+    </> showHash hash
       <> "-"
-      <> map replaceProblematicChars n
+      <> map replaceProblematicChars name
       <> "-script"
+
+getBuildDir :: FilePath -> String -> Int -> FilePath
+getBuildDir cacheDir name hash = cacheDir </> showHash hash <> "-" <> name <> "-build"
+
+getBuildExprPath :: FilePath -> FilePath
+getBuildExprPath buildDir = buildDir </> "default.nix"
+
+getResultDir :: FilePath -> String -> Int -> FilePath
+getResultDir cacheDir name hash = cacheDir </> showHash hash <> "-" <> name <> "-result"

@@ -14,14 +14,12 @@ module Magix.Run
   )
 where
 
-import Magix.Config (Config (scriptName))
+import Magix.Config (Config (..))
 import Magix.Options (Options (scriptArgs))
-import Magix.Paths (getResultDir)
 import System.FilePath ((</>))
 import System.Process (callProcess)
 
 run :: Options -> Config -> IO ()
-run opts conf = do
-  resultDir <- getResultDir conf
-  let executable = resultDir </> "bin" </> scriptName conf
-  callProcess executable (scriptArgs opts)
+run opts conf = callProcess executable (scriptArgs opts)
+  where
+    executable = resultDir conf </> "bin" </> scriptName conf

@@ -21,7 +21,16 @@ import Magix.Languages.Haskell.Expression (getHaskellNixExpression)
 import Test.Hspec (Spec, describe, it, shouldSatisfy)
 
 config :: Config
-config = Config "fakeScriptPath" "fakeScriptName" 0
+config =
+  Config
+    "fakeScriptPath"
+    "fakeScriptName"
+    0
+    "fakeCacheDir"
+    "fakeScriptLinkPath"
+    "fakeBuildDir"
+    "fakeBuildExprPath"
+    "fakeResultDir"
 
 directives :: HaskellDirectives
 directives = HaskellDirectives ["fake", "packages"] ["fake", "flags"]
