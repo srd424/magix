@@ -18,12 +18,12 @@ module Magix.Directives
 where
 
 import Control.Applicative ((<|>))
-import Control.Monad.Catch (MonadThrow (throwM))
+import Data.Bifunctor (Bifunctor (..))
 import Data.Text (Text)
 import Magix.Directives.Common (Parser)
 import Magix.Languages.Bash.Directives (BashDirectives (..), pBashDirectives)
 import Magix.Languages.Haskell.Directives (HaskellDirectives (..), pHaskellDirectives)
-import Text.Megaparsec (MonadParsec (..), chunk, parse)
+import Text.Megaparsec (MonadParsec (..), chunk, errorBundlePretty, parse)
 import Text.Megaparsec.Char (space1)
 import Prelude hiding (readFile)
 
@@ -41,5 +41,5 @@ pLanguageSpecificDirectives =
 pDirectives :: Parser Directives
 pDirectives = pShebang *> space1 *> pLanguageSpecificDirectives
 
-getDirectives :: (MonadThrow m) => FilePath -> Text -> m Directives
-getDirectives p x = either throwM pure $ parse pDirectives p x
+getDirectives :: FilePath -> Text -> Either String Directives
+getDirectives p x = first errorBundlePretty $ parse pDirectives p x

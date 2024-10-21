@@ -70,6 +70,7 @@ main = do
   logger <- setupLogger (verbosity opts)
   let logI = logL logger INFO
       logD = logL logger DEBUG
+      logE = logL logger ERROR
 
   logD $ "Options are " <> show opts
 
@@ -81,7 +82,9 @@ main = do
   logD $ "Magix configuration is " <> show conf
 
   logD "Parsing directives"
-  dirs <- getDirectives p f
+  dirs <- case getDirectives p f of
+    Left e -> logE "Failed parsing directives" >> error e
+    Right ds -> pure ds
   logD $ "Directives are " <> show dirs
 
   when (rebuild opts == ForceRebuild) $ do
