@@ -81,6 +81,7 @@ library
     , optparse-applicative
     , process
     , text
+    , unix
     , xdg-basedir
 
 executable magix

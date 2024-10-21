@@ -6,7 +6,7 @@
 --
 -- Maintainer  :  dominik.schrempf@gmail.com
 -- Stability   :  experimental
--- Portability :  portable
+-- Portability :  not portable
 --
 -- Creation date: Sun Oct 20 09:48:50 2024.
 module Magix.Build
@@ -24,10 +24,13 @@ import Magix.Config (Config (..))
 import System.Directory
   ( createDirectoryIfMissing,
     doesDirectoryExist,
+    doesFileExist,
     doesPathExist,
     removeDirectoryLink,
     removeDirectoryRecursive,
+    removeFile,
   )
+import System.Posix (createSymbolicLink)
 import System.Process (callProcess)
 import Prelude hiding (writeFile)
 
@@ -40,6 +43,8 @@ getBuildStatus c = do
 
 build :: Config -> Text -> IO ()
 build c e = do
+  -- Create sanitized link to script.
+  createSymbolicLink (scriptPath c) (scriptLinkPath c)
   -- Build directory.
   createDirectoryIfMissing True (buildDir c)
   -- Expression.
@@ -50,6 +55,9 @@ build c e = do
 
 removeBuild :: Config -> IO ()
 removeBuild c = do
+  -- Link to script.
+  scriptLinkPathExists <- doesFileExist (scriptLinkPath c)
+  when scriptLinkPathExists $ removeFile (scriptLinkPath c)
   -- Build directory.
   buildDirExists <- doesDirectoryExist (buildDir c)
   when buildDirExists $ removeDirectoryRecursive (buildDir c)

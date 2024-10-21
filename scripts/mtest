@@ -10,6 +10,8 @@ rm -rf "$XDG_CACHE_HOME/magix/*"
 cabal build all
 cabal test
 cabal run magix -- -v test-scripts/minimal-bash
+cabal run magix -- -v "test-scripts/minimal bash"
 cabal run magix -- -v test-scripts/minimal-haskell
+cabal run magix -- -v "test-scripts/minimal haskell"
 cabal run magix -- -v -f test-scripts/args-bash -h and other args
 cabal run magix -- -v -f test-scripts/args-haskell -h and other args

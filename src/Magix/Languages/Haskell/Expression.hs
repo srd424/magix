@@ -31,7 +31,7 @@ getHaskellNixExpression c (HaskellDirectives ps fs) = do
   e <- readFile f
   let rs =
         [ ("__SCRIPT_NAME__", pack $ scriptName c),
-          ("__SCRIPT_SOURCE__", pack $ scriptPath c),
+          ("__SCRIPT_SOURCE__", pack $ scriptLinkPath c),
           ("__HASKELL_PACKAGES__", unwords ps),
           ("__GHC_FLAGS__", unwords fs)
         ]

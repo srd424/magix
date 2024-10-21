@@ -8,8 +8,8 @@ pkgs.writeShellApplication {
   runtimeInputs = with pkgs; [ __RUNTIME_INPUTS__ ];
 
   text = ''
-    BASH_ARGV0=__SCRIPT_NAME__
+    BASH_ARGV0="__SCRIPT_NAME__"
     # shellcheck source=/dev/null
-    source ${__SCRIPT_SOURCE__} "$@"
+    source "${__SCRIPT_SOURCE__}" "$@"
   '';
 }

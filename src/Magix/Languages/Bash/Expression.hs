@@ -31,7 +31,7 @@ getBashNixExpression c (BashDirectives ps) = do
   e <- readFile f
   let rs =
         [ ("__SCRIPT_NAME__", pack $ scriptName c),
-          ("__SCRIPT_SOURCE__", pack $ scriptPath c),
+          ("__SCRIPT_SOURCE__", pack $ scriptLinkPath c),
           ("__RUNTIME_INPUTS__", unwords ps)
         ]
   pure $ foldl' replace' e rs
