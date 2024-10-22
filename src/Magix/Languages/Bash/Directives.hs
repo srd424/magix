@@ -17,9 +17,7 @@ where
 
 import Data.Foldable (Foldable (..))
 import Data.Text (Text)
-import Magix.Directives.Common (Parser, pDirectiveWithValues, pMagixDirective)
-import Text.Megaparsec (MonadParsec (notFollowedBy), chunk, sepEndBy)
-import Text.Megaparsec.Char (newline, space1)
+import Magix.Directives.Common (Parser, pDirectiveWithValues, pLanguageDirectives)
 import Prelude hiding (readFile)
 
 newtype BashDirectives = BashDirectives {_runtimeInputs :: [Text]}
@@ -28,10 +26,8 @@ newtype BashDirectives = BashDirectives {_runtimeInputs :: [Text]}
 pRuntimeInputs :: Parser BashDirectives
 pRuntimeInputs = BashDirectives <$> pDirectiveWithValues "runtimeInputs"
 
+combineRuntimeInputs :: [BashDirectives] -> BashDirectives
+combineRuntimeInputs = foldl' (<>) mempty
+
 pBashDirectives :: Parser BashDirectives
-pBashDirectives = do
-  pMagixDirective "bash"
-  space1
-  directives <- sepEndBy pRuntimeInputs newline
-  notFollowedBy $ chunk "#!"
-  pure $ foldl' (<>) mempty directives
+pBashDirectives = pLanguageDirectives "bash" pRuntimeInputs combineRuntimeInputs

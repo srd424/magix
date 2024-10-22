@@ -6,4 +6,5 @@ package manager.
 - Magix is a tiny wrapper around =nix-build=.
 
 * Next steps
+- Option to define cache directory.
 - Python, make it happen.

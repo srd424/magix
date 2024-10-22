@@ -10,5 +10,6 @@ package manager.
 
 # Next steps
 
+-   Option to define cache directory.
 -   Python, make it happen.
 

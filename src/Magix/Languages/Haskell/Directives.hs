@@ -20,9 +20,8 @@ where
 import Control.Applicative (Alternative (..))
 import Data.Foldable (Foldable (..))
 import Data.Text (Text)
-import Magix.Directives.Common (Parser, pDirectiveWithValues, pMagixDirective)
-import Text.Megaparsec (MonadParsec (notFollowedBy), chunk, sepEndBy, try)
-import Text.Megaparsec.Char (newline, space1)
+import Magix.Directives.Common (Parser, pDirectiveWithValues, pLanguageDirectives)
+import Text.Megaparsec (try)
 import Prelude hiding (readFile)
 
 data HaskellDirectives = HaskellDirectives
@@ -47,11 +46,8 @@ addHaskellDirective (HaskellDirectives ps fs) = \case
   (HaskellPackages ps') -> HaskellDirectives (ps <> ps') fs
   (GhcFlags fs') -> HaskellDirectives ps (fs <> fs')
 
+combineHaskellDirectives :: [HaskellDirective] -> HaskellDirectives
+combineHaskellDirectives = foldl' addHaskellDirective (HaskellDirectives [] [])
+
 pHaskellDirectives :: Parser HaskellDirectives
-pHaskellDirectives = do
-  pMagixDirective "haskell"
-  space1
-  ds <- sepEndBy pHaskellDirective newline
-  notFollowedBy $ chunk "#!"
-  let magix = foldl' addHaskellDirective (HaskellDirectives [] []) ds
-  pure magix
+pHaskellDirectives = pLanguageDirectives "haskell" pHaskellDirective combineHaskellDirectives
