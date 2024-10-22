@@ -25,13 +25,13 @@ import Text.Megaparsec (parse)
 import Prelude hiding (readFile)
 
 fnMinimalBash :: FilePath
-fnMinimalBash = "test-scripts/minimal-bash"
+fnMinimalBash = "test-scripts/bash/minimal"
 
 readMinimalBash :: IO Text
 readMinimalBash = readFile fnMinimalBash
 
 fnMinimalHaskell :: FilePath
-fnMinimalHaskell = "test-scripts/minimal-haskell"
+fnMinimalHaskell = "test-scripts/haskell/minimal"
 
 readMinimalHaskell :: IO Text
 readMinimalHaskell = readFile fnMinimalHaskell

@@ -3,15 +3,23 @@
 set -e
 
 # Clean up.
-cabal clean
+echo "Cleaning up"
+cabal clean >/dev/null
 rm -rf "$XDG_CACHE_HOME/magix/*"
 
-# Build and run.
-cabal build all
-cabal test
-cabal run magix -- -v test-scripts/minimal-bash
-cabal run magix -- -v "test-scripts/minimal bash"
-cabal run magix -- -v test-scripts/minimal-haskell
-cabal run magix -- -v "test-scripts/minimal haskell"
-cabal run magix -- -v -f test-scripts/args-bash -h and other args
-cabal run magix -- -v -f test-scripts/args-haskell -h and other args
+# Build and test.
+echo "Building"
+cabal build all >/dev/null
+
+echo "Testing"
+cabal test >/dev/null
+
+# Sample scripts.
+LANGUAGES=("bash" "haskell")
+for l in "${LANGUAGES[@]}"; do
+    echo "Running sample scripts for language ${l}"
+    dir="test-scripts/${l}"
+    cabal run magix -- -v "${dir}/minimal" >/dev/null
+    cabal run magix -- -v "${dir}/minimal with spaces" >/dev/null
+    cabal run magix -- -v "${dir}/args" -h and other args >/dev/null
+done
