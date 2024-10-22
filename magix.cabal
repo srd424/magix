@@ -103,11 +103,10 @@ test-suite test-magix
   other-modules:
     Magix.Directives.CommonSpec
     Magix.DirectivesSpec
+    Magix.ExpressionSpec
     Magix.Languages.Bash.DirectivesSpec
-    Magix.Languages.Bash.ExpressionSpec
     Magix.Languages.Haskell.DirectivesSpec
-    Magix.Languages.Haskell.ExpressionSpec
-    Magix.Languages.TestHelpers
+    Magix.Tools
 
   autogen-modules:
   ghc-options:

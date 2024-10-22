@@ -10,6 +10,9 @@ package manager.
 
 # Next steps
 
+-   `Language` data type collecting all languages. This data type should also
+    define the language name via `getLanguageName`.
+-   Nix expression and replacement test helpers.
 -   Option to define cache directory.
 -   Python, make it happen.
 

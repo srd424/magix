@@ -10,28 +10,13 @@
 --
 -- Creation date: Fri Oct 18 13:36:32 2024.
 module Magix.Languages.Bash.Expression
-  ( getBashNixExpression,
+  ( getBashReplacements,
   )
 where
 
-import Data.Foldable (Foldable (..))
-import Data.Text (Text, pack, replace, unwords)
-import Data.Text.IO (readFile)
-import Magix.Config (Config (..))
+import Data.Text (Text, unwords)
 import Magix.Languages.Bash.Directives (BashDirectives (..))
-import Paths_magix (getDataFileName)
-import Prelude hiding (readFile, unwords)
+import Prelude hiding (unwords)
 
-replace' :: Text -> (Text, Text) -> Text
-replace' t (x, y) = replace x y t
-
-getBashNixExpression :: Config -> BashDirectives -> IO Text
-getBashNixExpression c (BashDirectives ps) = do
-  f <- getDataFileName "src/Magix/Languages/Bash/Template.nix"
-  e <- readFile f
-  let rs =
-        [ ("__SCRIPT_NAME__", pack $ scriptName c),
-          ("__SCRIPT_SOURCE__", pack $ scriptLinkPath c),
-          ("__RUNTIME_INPUTS__", unwords ps)
-        ]
-  pure $ foldl' replace' e rs
+getBashReplacements :: BashDirectives -> [(Text, Text)]
+getBashReplacements (BashDirectives ps) = [("__RUNTIME_INPUTS__", unwords ps)]

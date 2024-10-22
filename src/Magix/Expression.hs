@@ -9,15 +9,53 @@
 -- Portability :  portable
 --
 -- Creation date: Fri Oct 18 13:36:32 2024.
-module Magix.Expression (getNixExpression) where
+module Magix.Expression
+  ( getTemplate,
+    getReplacements,
+    getNixExpression,
+  )
+where
 
-import Data.Text (Text)
+import Data.Foldable (Foldable (..))
+import Data.Text (Text, pack, replace)
+import Data.Text.IO (readFile)
 import Magix.Config (Config (..))
 import Magix.Directives (Directives (..))
-import Magix.Languages.Bash.Expression (getBashNixExpression)
-import Magix.Languages.Haskell.Expression (getHaskellNixExpression)
-import Prelude hiding (unwords)
+import Magix.Languages.Bash.Expression (getBashReplacements)
+import Magix.Languages.Haskell.Expression (getHaskellReplacements)
+import Paths_magix (getDataFileName)
+import Prelude hiding (readFile)
+
+-- | Use the language name to find the Nix expression template.
+getLanguageName :: Directives -> String
+getLanguageName (Haskell _) = "Haskell"
+getLanguageName (Bash _) = "Bash"
+
+getTemplatePath :: Directives -> FilePath
+getTemplatePath ds = "src/Magix/Languages/" <> n <> "/Template.nix"
+  where
+    n = getLanguageName ds
+
+getTemplate :: Directives -> IO Text
+getTemplate ds = getDataFileName (getTemplatePath ds) >>= readFile
+
+replace' :: Text -> (Text, Text) -> Text
+replace' t (x, y) = replace x y t
+
+getCommonReplacements :: Config -> [(Text, Text)]
+getCommonReplacements c =
+  [ ("__SCRIPT_NAME__", pack $ scriptName c),
+    ("__SCRIPT_SOURCE__", pack $ scriptLinkPath c)
+  ]
+
+getLanguageReplacements :: Directives -> [(Text, Text)]
+getLanguageReplacements (Haskell ds) = getHaskellReplacements ds
+getLanguageReplacements (Bash ds) = getBashReplacements ds
+
+getReplacements :: Config -> Directives -> [(Text, Text)]
+getReplacements c ds = getCommonReplacements c ++ getLanguageReplacements ds
 
 getNixExpression :: Config -> Directives -> IO Text
-getNixExpression c (Haskell x) = getHaskellNixExpression c x
-getNixExpression c (Bash x) = getBashNixExpression c x
+getNixExpression c ds = do
+  t <- getTemplate ds
+  pure $ foldl' replace' t (getReplacements c ds)

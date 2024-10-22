@@ -1,5 +1,5 @@
 -- |
--- Module      :  Magix.Languages.TestHelpers
+-- Module      :  Magix.Tools
 -- Description :  Helpers shared across tests
 -- Copyright   :  2024 Dominik Schrempf
 -- License     :  GPL-3.0-or-later
@@ -9,7 +9,7 @@
 -- Portability :  portable
 --
 -- Creation date: Mon Oct 21 21:56:26 2024.
-module Magix.Languages.TestHelpers
+module Magix.Tools
   ( doesNotContainTemplates,
     containsSpaceSeparatedValues,
   )
