@@ -16,7 +16,7 @@ where
 
 import Data.Text (Text, isInfixOf)
 import Magix.Config (Config (..))
-import Magix.Directives (Directives (..))
+import Magix.Directives (Directives (..), getLanguageName)
 import Magix.Expression (getNixExpression, getReplacements, getTemplate)
 import Magix.Languages.Bash.Directives (BashDirectives (..))
 import Magix.Languages.Haskell.Directives (HaskellDirectives (..))
@@ -42,8 +42,8 @@ config =
 runtimeInputs :: [Text]
 runtimeInputs = ["fake", "inputs"]
 
-bashDirectives :: BashDirectives
-bashDirectives = BashDirectives runtimeInputs
+bashDirectives :: Directives
+bashDirectives = Bash $ BashDirectives runtimeInputs
 
 haskellPackages :: [Text]
 haskellPackages = ["fake", "packages"]
@@ -51,28 +51,26 @@ haskellPackages = ["fake", "packages"]
 ghcFlags :: [Text]
 ghcFlags = ["fake", "flags"]
 
-haskellDirectives :: HaskellDirectives
-haskellDirectives = HaskellDirectives haskellPackages ghcFlags
+haskellDirectives :: Directives
+haskellDirectives = Haskell $ HaskellDirectives haskellPackages ghcFlags
 
 spec :: Spec
 spec = do
   describe "replacements" $ do
     it "all replacements should be used" $ do
-      let bds = Bash bashDirectives
-      bashTempl <- getTemplate bds
-      allReplacementsUsed bashTempl (getReplacements config bds) `shouldBe` True
+      bashTempl <- getTemplate $ getLanguageName bashDirectives
+      allReplacementsUsed bashTempl (getReplacements config bashDirectives) `shouldBe` True
 
-      let hds = Haskell haskellDirectives
-      haskellTempl <- getTemplate hds
-      allReplacementsUsed haskellTempl (getReplacements config hds) `shouldBe` True
+      haskellTempl <- getTemplate $ getLanguageName haskellDirectives
+      allReplacementsUsed haskellTempl (getReplacements config haskellDirectives) `shouldBe` True
 
   describe "getNixExpression" $ do
     it "works correctly for some sample data" $ do
-      bashExpr <- getNixExpression config (Bash bashDirectives)
+      bashExpr <- getNixExpression config bashDirectives
       bashExpr `shouldSatisfy` doesNotContainTemplates
       bashExpr `shouldSatisfy` containsSpaceSeparatedValues runtimeInputs
 
-      haskellExpr <- getNixExpression config (Haskell haskellDirectives)
+      haskellExpr <- getNixExpression config haskellDirectives
       haskellExpr `shouldSatisfy` doesNotContainTemplates
       haskellExpr `shouldSatisfy` containsSpaceSeparatedValues haskellPackages
       haskellExpr `shouldSatisfy` containsSpaceSeparatedValues ghcFlags

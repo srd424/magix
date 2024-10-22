@@ -20,24 +20,17 @@ import Data.Foldable (Foldable (..))
 import Data.Text (Text, pack, replace)
 import Data.Text.IO (readFile)
 import Magix.Config (Config (..))
-import Magix.Directives (Directives (..))
+import Magix.Directives (Directives (..), getLanguageName)
 import Magix.Languages.Bash.Expression (getBashReplacements)
 import Magix.Languages.Haskell.Expression (getHaskellReplacements)
 import Paths_magix (getDataFileName)
 import Prelude hiding (readFile)
 
--- | Use the language name to find the Nix expression template.
-getLanguageName :: Directives -> String
-getLanguageName (Haskell _) = "Haskell"
-getLanguageName (Bash _) = "Bash"
+getTemplatePath :: String -> FilePath
+getTemplatePath languageName = "src/Magix/Languages/" <> languageName <> "/Template.nix"
 
-getTemplatePath :: Directives -> FilePath
-getTemplatePath ds = "src/Magix/Languages/" <> n <> "/Template.nix"
-  where
-    n = getLanguageName ds
-
-getTemplate :: Directives -> IO Text
-getTemplate ds = getDataFileName (getTemplatePath ds) >>= readFile
+getTemplate :: String -> IO Text
+getTemplate languageName = getDataFileName (getTemplatePath languageName) >>= readFile
 
 replace' :: Text -> (Text, Text) -> Text
 replace' t (x, y) = replace x y t
@@ -57,5 +50,5 @@ getReplacements c ds = getCommonReplacements c ++ getLanguageReplacements ds
 
 getNixExpression :: Config -> Directives -> IO Text
 getNixExpression c ds = do
-  t <- getTemplate ds
+  t <- getTemplate $ getLanguageName ds
   pure $ foldl' replace' t (getReplacements c ds)

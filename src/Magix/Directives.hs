@@ -11,6 +11,7 @@
 -- Creation date: Fri Oct 18 09:17:40 2024.
 module Magix.Directives
   ( Directives (..),
+    getLanguageName,
     pShebang,
     pDirectives,
     getDirectives,
@@ -27,8 +28,15 @@ import Text.Megaparsec (MonadParsec (..), chunk, errorBundlePretty, parse)
 import Text.Megaparsec.Char (space1)
 import Prelude hiding (readFile)
 
-data Directives = Haskell !HaskellDirectives | Bash !BashDirectives
+data Directives
+  = Haskell !HaskellDirectives
+  | Bash !BashDirectives
   deriving (Eq, Show)
+
+-- | Use the language name to find the Nix expression template.
+getLanguageName :: Directives -> String
+getLanguageName (Haskell _) = "Haskell"
+getLanguageName (Bash _) = "Bash"
 
 pShebang :: Parser Text
 pShebang = chunk "#!/usr/bin/env magix"
