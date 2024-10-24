@@ -1,6 +1,5 @@
 {
   pkgs ? import <nixpkgs> { },
-  makeWrapper ? pkgs.makeWrapper,
 }:
 
 pkgs.stdenv.mkDerivation {
@@ -9,7 +8,7 @@ pkgs.stdenv.mkDerivation {
   src = __SCRIPT_SOURCE__;
   dontUnpack = true;
 
-  nativeBuildInputs = [ makeWrapper ];
+  nativeBuildInputs = with pkgs; [ makeWrapper ];
 
   buildInputs = with pkgs; [
     (haskellPackages.ghcWithPackages (ps: with ps; [ __HASKELL_PACKAGES__ ]))
