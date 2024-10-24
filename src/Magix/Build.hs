@@ -38,31 +38,33 @@ data BuildStatus = HasBeenBuilt | NeedToBuild
 
 getBuildStatus :: Config -> IO BuildStatus
 getBuildStatus c = do
-  resultDirExists <- doesPathExist (resultDir c)
+  resultDirExists <- doesPathExist c.resultDir
   pure $ if resultDirExists then HasBeenBuilt else NeedToBuild
 
 build :: Config -> Text -> IO ()
 build c e = do
   -- Remove any previous builds.
   removeBuild c
+  -- Make sure the cache directory exists.
+  createDirectoryIfMissing True c.cacheDir
   -- Create sanitized link to script.
-  createSymbolicLink (scriptPath c) (scriptLinkPath c)
+  createSymbolicLink c.scriptPath c.scriptLinkPath
   -- Build directory.
-  createDirectoryIfMissing True (buildDir c)
+  createDirectoryIfMissing True c.buildDir
   -- Expression.
   let exprPath = buildExprPath c
   writeFile exprPath e
   -- Build.
-  callProcess "nix-build" ["--out-link", resultDir c, buildDir c]
+  callProcess "nix-build" ["--out-link", c.resultDir, c.buildDir]
 
 removeBuild :: Config -> IO ()
 removeBuild c = do
   -- Link to script.
-  scriptLinkPathExists <- doesFileExist (scriptLinkPath c)
-  when scriptLinkPathExists $ removeFile (scriptLinkPath c)
+  scriptLinkPathExists <- doesFileExist c.scriptLinkPath
+  when scriptLinkPathExists $ removeFile c.scriptLinkPath
   -- Build directory.
-  buildDirExists <- doesDirectoryExist (buildDir c)
-  when buildDirExists $ removeDirectoryRecursive (buildDir c)
+  buildDirExists <- doesDirectoryExist c.buildDir
+  when buildDirExists $ removeDirectoryRecursive c.buildDir
   -- Result directory.
-  resultDirExists <- doesDirectoryExist (resultDir c)
-  when resultDirExists $ removeDirectoryLink (resultDir c)
+  resultDirExists <- doesDirectoryExist c.resultDir
+  when resultDirExists $ removeDirectoryLink c.resultDir

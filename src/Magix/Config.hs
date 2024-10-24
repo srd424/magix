@@ -44,7 +44,7 @@ data Config = Config
 getConfig :: Options -> Text -> IO Config
 getConfig o x = do
   p' <- canonicalizePath p
-  c <- maybe (getUserCacheDir "magix") pure o.cachePath
+  c <- maybe (getUserCacheDir "magix") canonicalizePath o.cachePath
   let n = takeBaseName p
       h = hash x
       l = getScriptLinkPath c n h
