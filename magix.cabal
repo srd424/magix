@@ -105,6 +105,7 @@ test-suite test-magix
   main-is:         Spec.hs
   hs-source-dirs:  test
   other-modules:
+    Magix.BuildSpec
     Magix.Directives.CommonSpec
     Magix.DirectivesSpec
     Magix.ExpressionSpec
@@ -118,7 +119,10 @@ test-suite test-magix
   type:            exitcode-stdio-1.0
   build-depends:
     , base        >=4.7 && <5
+    , directory
     , hspec
     , magix
     , megaparsec
+    , random
     , text
+    , unix

@@ -25,8 +25,6 @@ import System.Directory
   ( createDirectoryIfMissing,
     doesDirectoryExist,
     doesFileExist,
-    doesPathExist,
-    removeDirectoryLink,
     removeDirectoryRecursive,
     removeFile,
   )
@@ -34,11 +32,11 @@ import System.Posix (createSymbolicLink)
 import System.Process (callProcess)
 import Prelude hiding (writeFile)
 
-data BuildStatus = HasBeenBuilt | NeedToBuild
+data BuildStatus = HasBeenBuilt | NeedToBuild deriving (Eq, Show)
 
 getBuildStatus :: Config -> IO BuildStatus
 getBuildStatus c = do
-  resultDirExists <- doesPathExist c.resultDir
+  resultDirExists <- doesDirectoryExist c.resultLinkPath
   pure $ if resultDirExists then HasBeenBuilt else NeedToBuild
 
 build :: Config -> Text -> IO ()
@@ -55,7 +53,7 @@ build c e = do
   let exprPath = buildExprPath c
   writeFile exprPath e
   -- Build.
-  callProcess "nix-build" ["--out-link", c.resultDir, c.buildDir]
+  callProcess "nix-build" ["--out-link", c.resultLinkPath, c.buildDir]
 
 removeBuild :: Config -> IO ()
 removeBuild c = do
@@ -66,5 +64,5 @@ removeBuild c = do
   buildDirExists <- doesDirectoryExist c.buildDir
   when buildDirExists $ removeDirectoryRecursive c.buildDir
   -- Result directory.
-  resultDirExists <- doesDirectoryExist c.resultDir
-  when resultDirExists $ removeDirectoryLink c.resultDir
+  resultDirExists <- doesDirectoryExist c.resultLinkPath
+  when resultDirExists $ removeFile c.resultLinkPath

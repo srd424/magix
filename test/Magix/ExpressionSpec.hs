@@ -15,12 +15,12 @@ module Magix.ExpressionSpec
 where
 
 import Data.Text (Text, isInfixOf)
-import Magix.Config (Config (..))
+import Magix.Config (Config)
 import Magix.Directives (Directives (..), getLanguageName)
 import Magix.Expression (getNixExpression, getReplacements, getTemplate)
 import Magix.Languages.Bash.Directives (BashDirectives (..))
 import Magix.Languages.Haskell.Directives (HaskellDirectives (..))
-import Magix.Tools (containsSpaceSeparatedValues, doesNotContainTemplates)
+import Magix.Tools (containsSpaceSeparatedValues, doesNotContainTemplates, getFakeConfigWithHash)
 import Test.Hspec (Spec, describe, it, shouldBe, shouldSatisfy)
 import Prelude hiding (unwords)
 
@@ -28,17 +28,7 @@ allReplacementsUsed :: Text -> [(Text, Text)] -> Bool
 allReplacementsUsed x = all (\(r, _) -> r `isInfixOf` x)
 
 config :: Config
-config =
-  Config
-    "fakeScriptPath"
-    "fakeScriptName"
-    "fakeNixpkgsPath"
-    (length ("fakeMagixHash" :: String))
-    "fakeCacheDir"
-    "fakeScriptLinkPath"
-    "fakeBuildDir"
-    "fakeBuildExprPath"
-    "fakeResultDir"
+config = getFakeConfigWithHash 0
 
 runtimeInputs :: [Text]
 runtimeInputs = ["fake", "inputs"]

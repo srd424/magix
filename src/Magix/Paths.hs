@@ -13,7 +13,7 @@ module Magix.Paths
   ( getScriptLinkPath,
     getBuildDir,
     getBuildExprPath,
-    getResultDir,
+    getResultLinkPath,
   )
 where
 
@@ -45,5 +45,5 @@ getBuildDir cacheDir name hash = cacheDir </> showHash hash <> "-" <> name <> "-
 getBuildExprPath :: FilePath -> FilePath
 getBuildExprPath buildDir = buildDir </> "default.nix"
 
-getResultDir :: FilePath -> String -> Int -> FilePath
-getResultDir cacheDir name hash = cacheDir </> showHash hash <> "-" <> name <> "-result"
+getResultLinkPath :: FilePath -> String -> Int -> FilePath
+getResultLinkPath cacheDir name hash = cacheDir </> showHash hash <> "-" <> name <> "-result"

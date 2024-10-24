@@ -22,4 +22,4 @@ import System.Process (callProcess)
 run :: Options -> Config -> IO ()
 run opts conf = callProcess executable (scriptArgs opts)
   where
-    executable = resultDir conf </> "bin" </> scriptName conf
+    executable = resultLinkPath conf </> "bin" </> scriptName conf
