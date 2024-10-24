@@ -89,7 +89,7 @@ main = do
   logD $ "Reading script at path " <> p
   f <- readFile p
 
-  conf <- getConfig p f
+  conf <- getConfig opts f
   logD $ "Magix configuration is " <> show conf
 
   logD "Parsing directives"

@@ -17,6 +17,7 @@ where
 
 import Data.Hashable (hash)
 import Data.Text (Text)
+import Magix.Options (Options (..))
 import Magix.Paths (getBuildDir, getBuildExprPath, getResultDir, getScriptLinkPath)
 import System.Directory (canonicalizePath)
 import System.Environment.XDG.BaseDir (getUserCacheDir)
@@ -40,14 +41,26 @@ data Config = Config
   }
   deriving (Eq, Show)
 
-getConfig :: FilePath -> Text -> IO Config
-getConfig p x = do
+getConfig :: Options -> Text -> IO Config
+getConfig o x = do
   p' <- canonicalizePath p
-  c <- getUserCacheDir "magix"
+  c <- maybe (getUserCacheDir "magix") pure o.cachePath
   let n = takeBaseName p
       h = hash x
       l = getScriptLinkPath c n h
       d = getBuildDir c n h
       e = getBuildExprPath d
       r = getResultDir c n h
-  pure $ Config p' n h c l d e r
+  pure $
+    Config
+      { scriptPath = p',
+        scriptName = n,
+        scriptHash = h,
+        cacheDir = c,
+        scriptLinkPath = l,
+        buildDir = d,
+        buildExprPath = e,
+        resultDir = r
+      }
+  where
+    p = o.scriptPath

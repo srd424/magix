@@ -17,7 +17,7 @@ module Magix.Options
   )
 where
 
-import Control.Applicative (Alternative (..))
+import Control.Applicative (Alternative (..), optional)
 import Options.Applicative
   ( Parser,
     ParserInfo (infoPolicy),
@@ -32,6 +32,7 @@ import Options.Applicative
     progDesc,
     short,
     strArgument,
+    strOption,
   )
 import Options.Applicative.Types (ArgPolicy (..))
 
@@ -42,13 +43,22 @@ data Rebuild = ReuseBuildIfAvailable | ForceBuild deriving (Eq, Show)
 data Options = Options
   { verbosity :: !Verbosity,
     forceBuild :: !Rebuild,
+    cachePath :: !(Maybe FilePath),
+    nixpkgsPath :: !(Maybe FilePath),
     scriptPath :: !FilePath,
     scriptArgs :: ![String]
   }
   deriving (Eq, Show)
 
 pOptions :: Parser Options
-pOptions = Options <$> pLogLevel <*> pForceBuild <*> pScriptPath <*> pScriptArgs
+pOptions =
+  Options
+    <$> pLogLevel
+    <*> pForceBuild
+    <*> pCachePath
+    <*> pNixpkgsPath
+    <*> pScriptPath
+    <*> pScriptArgs
 
 pLogLevel :: Parser Verbosity
 pLogLevel =
@@ -69,6 +79,26 @@ pForceBuild =
         <> short 'f'
         <> help "Force build, even when cached build exists"
     )
+
+pCachePath :: Parser (Maybe FilePath)
+pCachePath =
+  optional $
+    strOption
+      ( metavar "CACHE_PATH"
+          <> long "cache-path"
+          <> short 'c'
+          <> help "Path of cache directory to use for builds (default: '$XDG_CACHE_HOME/magix')"
+      )
+
+pNixpkgsPath :: Parser (Maybe FilePath)
+pNixpkgsPath =
+  optional $
+    strOption
+      ( metavar "NIXPKGS_PATH"
+          <> long "nixpkgs-path"
+          <> short 'n'
+          <> help "Path of Nixpkgs repository to use (default: extracted from '$NIX_PATH')"
+      )
 
 pScriptPath :: Parser FilePath
 pScriptPath =

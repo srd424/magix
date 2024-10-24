@@ -30,7 +30,10 @@ source-repository head
   type:     git
 
 common common
-  default-extensions: OverloadedStrings
+  default-extensions:
+    DuplicateRecordFields
+    OverloadedRecordDot
+    OverloadedStrings
 
 common lib
   default-language: GHC2021
