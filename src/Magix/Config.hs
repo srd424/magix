@@ -17,6 +17,7 @@ where
 
 import Data.Hashable (hash)
 import Data.Text (Text)
+import Magix.NixpkgsPath (getDefaultNixpkgsPath)
 import Magix.Options (Options (..))
 import Magix.Paths (getBuildDir, getBuildExprPath, getResultDir, getScriptLinkPath)
 import System.Directory (canonicalizePath)
@@ -29,6 +30,7 @@ data Config = Config
     scriptName :: !String,
     -- | The Magix hash includes the hash of the script directory and the path
     -- to the Nixpkgs directory.
+    nixpkgsPath :: !FilePath,
     magixHash :: !Int,
     -- | Cache directory containing Nix expressions and build results.
     cacheDir :: !FilePath,
@@ -43,26 +45,37 @@ data Config = Config
   }
   deriving (Eq, Show)
 
+getDefaultNixpkgsPathOrFail :: IO FilePath
+getDefaultNixpkgsPathOrFail = do
+  mr <- getDefaultNixpkgsPath
+  case mr of
+    Left err -> do
+      putStrLn "Could not retrieve Nixpkgs path from NIX_PATH"
+      error err
+    Right np -> pure np
+
 getConfig :: Options -> Text -> IO Config
 getConfig o x = do
   p' <- canonicalizePath p
   c <- maybe (getUserCacheDir "magix") canonicalizePath o.cachePath
-  let n = takeBaseName p
-      h = hash x
-      l = getScriptLinkPath c n h
-      d = getBuildDir c n h
-      e = getBuildExprPath d
-      r = getResultDir c n h
+  np <- maybe getDefaultNixpkgsPathOrFail canonicalizePath o.nixpkgsPath
+  let nm = takeBaseName p
+      ha = hash (x, np)
+      lp = getScriptLinkPath c nm ha
+      bd = getBuildDir c nm ha
+      be = getBuildExprPath bd
+      rd = getResultDir c nm ha
   pure $
     Config
       { scriptPath = p',
-        scriptName = n,
-        magixHash = h,
+        scriptName = nm,
+        magixHash = ha,
+        nixpkgsPath = np,
         cacheDir = c,
-        scriptLinkPath = l,
-        buildDir = d,
-        buildExprPath = e,
-        resultDir = r
+        scriptLinkPath = lp,
+        buildDir = bd,
+        buildExprPath = be,
+        resultDir = rd
       }
   where
     p = o.scriptPath

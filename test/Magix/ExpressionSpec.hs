@@ -32,7 +32,8 @@ config =
   Config
     "fakeScriptPath"
     "fakeScriptName"
-    0
+    "fakeNixpkgsPath"
+    (length ("fakeMagixHash" :: String))
     "fakeCacheDir"
     "fakeScriptLinkPath"
     "fakeBuildDir"
