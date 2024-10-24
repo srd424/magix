@@ -56,8 +56,8 @@ haskellDirectives = Haskell $ HaskellDirectives haskellPackages ghcFlags
 
 spec :: Spec
 spec = do
-  describe "replacements" $ do
-    it "all replacements should be used" $ do
+  describe "getReplacements" $ do
+    it "all replacements should be used as placeholders in the templates" $ do
       bashTempl <- getTemplate $ getLanguageName bashDirectives
       allReplacementsUsed bashTempl (getReplacements config bashDirectives) `shouldBe` True
 
@@ -65,12 +65,18 @@ spec = do
       allReplacementsUsed haskellTempl (getReplacements config haskellDirectives) `shouldBe` True
 
   describe "getNixExpression" $ do
-    it "works correctly for some sample data" $ do
+    it "all placeholders in templates should be replaced" $ do
       bashExpr <- getNixExpression config bashDirectives
       bashExpr `shouldSatisfy` doesNotContainTemplates
-      bashExpr `shouldSatisfy` containsSpaceSeparatedValues runtimeInputs
 
       haskellExpr <- getNixExpression config haskellDirectives
       haskellExpr `shouldSatisfy` doesNotContainTemplates
+
+  describe "getNixExpression" $ do
+    it "works correctly for some sample data" $ do
+      bashExpr <- getNixExpression config bashDirectives
+      bashExpr `shouldSatisfy` containsSpaceSeparatedValues runtimeInputs
+
+      haskellExpr <- getNixExpression config haskellDirectives
       haskellExpr `shouldSatisfy` containsSpaceSeparatedValues haskellPackages
       haskellExpr `shouldSatisfy` containsSpaceSeparatedValues ghcFlags
