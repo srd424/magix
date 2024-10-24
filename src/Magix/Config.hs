@@ -27,7 +27,9 @@ import Prelude hiding (readFile)
 data Config = Config
   { scriptPath :: !FilePath,
     scriptName :: !String,
-    scriptHash :: !Int,
+    -- | The Magix hash includes the hash of the script directory and the path
+    -- to the Nixpkgs directory.
+    magixHash :: !Int,
     -- | Cache directory containing Nix expressions and build results.
     cacheDir :: !FilePath,
     -- | Sanitized path to the link to the original script.
@@ -55,7 +57,7 @@ getConfig o x = do
     Config
       { scriptPath = p',
         scriptName = n,
-        scriptHash = h,
+        magixHash = h,
         cacheDir = c,
         scriptLinkPath = l,
         buildDir = d,
