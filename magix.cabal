@@ -66,6 +66,7 @@ library
     Magix.Languages.Bash.Expression
     Magix.Languages.Haskell.Directives
     Magix.Languages.Haskell.Expression
+    Magix.NixpkgsPath
     Magix.Options
     Magix.Paths
     Magix.Run
