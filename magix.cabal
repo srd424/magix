@@ -110,6 +110,7 @@ test-suite test-magix
     Magix.ExpressionSpec
     Magix.Languages.Bash.DirectivesSpec
     Magix.Languages.Haskell.DirectivesSpec
+    Magix.NixpkgsPathSpec
     Magix.Tools
 
   autogen-modules:
