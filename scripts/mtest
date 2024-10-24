@@ -4,22 +4,22 @@ set -e
 
 # Clean up.
 echo "Cleaning up"
-cabal clean >/dev/null
-rm -rf "$XDG_CACHE_HOME/magix/*"
+cabal clean
+rm -rfv "$XDG_CACHE_HOME/magix/"*
 
 # Build and test.
 echo "Building"
-cabal build all >/dev/null
+cabal build all
 
 echo "Testing"
-cabal test >/dev/null
+cabal test
 
 # Sample scripts.
 LANGUAGES=("bash" "haskell")
 for l in "${LANGUAGES[@]}"; do
     echo "Running sample scripts for language ${l}"
     dir="test-scripts/${l}"
-    cabal run magix -- -v "${dir}/minimal" >/dev/null
-    cabal run magix -- -v "${dir}/minimal with spaces" >/dev/null
-    cabal run magix -- -v "${dir}/args" -h and other args >/dev/null
+    cabal run magix -- -v "${dir}/minimal"
+    cabal run magix -- -v "${dir}/minimal with spaces"
+    cabal run magix -- -v "${dir}/args" -h and other args
 done
