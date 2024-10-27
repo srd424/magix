@@ -15,20 +15,16 @@ module Magix.ExpressionSpec
 where
 
 import Data.Text (Text, isInfixOf)
-import Magix.Config (Config)
 import Magix.Directives (Directives (..), getLanguageName)
 import Magix.Expression (getNixExpression, getReplacements, getTemplate)
 import Magix.Languages.Bash.Directives (BashDirectives (..))
 import Magix.Languages.Haskell.Directives (HaskellDirectives (..))
-import Magix.Tools (containsSpaceSeparatedValues, doesNotContainTemplates, getFakeConfigWithHash)
+import Magix.Tools (containsSpaceSeparatedValues, doesNotContainTemplates, getRandomFakeConfig)
 import Test.Hspec (Spec, describe, it, shouldBe, shouldSatisfy)
 import Prelude hiding (unwords)
 
 allReplacementsUsed :: Text -> [(Text, Text)] -> Bool
 allReplacementsUsed x = all (\(r, _) -> r `isInfixOf` x)
-
-config :: Config
-config = getFakeConfigWithHash 0
 
 runtimeInputs :: [Text]
 runtimeInputs = ["fake", "inputs"]
@@ -49,6 +45,7 @@ spec :: Spec
 spec = do
   describe "getReplacements" $ do
     it "all replacements should be used as placeholders in the templates" $ do
+      config <- getRandomFakeConfig
       bashTempl <- getTemplate $ getLanguageName bashDirectives
       allReplacementsUsed bashTempl (getReplacements config bashDirectives) `shouldBe` True
 
@@ -57,6 +54,7 @@ spec = do
 
   describe "getNixExpression" $ do
     it "all placeholders in templates should be replaced" $ do
+      config <- getRandomFakeConfig
       bashExpr <- getNixExpression config bashDirectives
       bashExpr `shouldSatisfy` doesNotContainTemplates
 
@@ -65,6 +63,7 @@ spec = do
 
   describe "getNixExpression" $ do
     it "works correctly for some sample data" $ do
+      config <- getRandomFakeConfig
       bashExpr <- getNixExpression config bashDirectives
       bashExpr `shouldSatisfy` containsSpaceSeparatedValues runtimeInputs
 

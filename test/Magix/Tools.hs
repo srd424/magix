@@ -12,12 +12,16 @@
 module Magix.Tools
   ( doesNotContainTemplates,
     containsSpaceSeparatedValues,
-    getFakeConfigWithHash,
+    getRandomFakeConfig,
   )
 where
 
+import Control.Monad (replicateM)
 import Data.Text (Text, isInfixOf, unwords)
 import Magix.Config (Config (..))
+import System.Directory (createDirectory, getTemporaryDirectory)
+import System.FilePath ((</>))
+import System.Random.Stateful (randomIO, randomRIO)
 import Prelude hiding (unwords)
 
 doesNotContainTemplates :: Text -> Bool
@@ -26,15 +30,23 @@ doesNotContainTemplates = not . isInfixOf "__"
 containsSpaceSeparatedValues :: [Text] -> Text -> Bool
 containsSpaceSeparatedValues xs = isInfixOf (unwords xs)
 
-getFakeConfigWithHash :: Int -> Config
-getFakeConfigWithHash h =
-  Config
-    "/tmp/fakeScriptPath"
-    "/tmp/fakeScriptName"
-    "/tmp/fakeNixpkgsPath"
-    h
-    "/tmp/fakeCacheDir"
-    "/tmp/fakeScriptLinkPath"
-    "/tmp/fakeBuildDir"
-    "/tmp/fakeBuildExprPath"
-    "/tmp/fakeResultDir"
+getRandomString :: IO String
+getRandomString = replicateM 40 $ randomRIO ('a', 'z')
+
+getRandomFakeConfig :: IO Config
+getRandomFakeConfig = do
+  dir <- ("magix-" <>) <$> getRandomString
+  tmp <- (</> dir) <$> getTemporaryDirectory
+  createDirectory tmp
+  hsh <- abs <$> (randomIO :: IO Int)
+  pure $
+    Config
+      (tmp </> "fakeScriptPath")
+      (tmp </> "fakeScriptName")
+      (tmp </> "fakeNixpkgsPath")
+      hsh
+      (tmp </> "fakeCacheDir")
+      (tmp </> "fakeScriptLinkPath")
+      (tmp </> "fakeBuildDir")
+      (tmp </> "fakeBuildExprPath")
+      (tmp </> "fakeResultDir")

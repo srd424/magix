@@ -120,6 +120,7 @@ test-suite test-magix
   build-depends:
     , base        >=4.7 && <5
     , directory
+    , filepath
     , hspec
     , magix
     , megaparsec
