@@ -10,11 +10,15 @@ package manager.
 
 # Next steps
 
--   Use random temporary cache directory for tests.
--   We create random hashes when running tests. Can we use the HSpec seed for
-    reproducability? Maybe we have to write an Arbitrary instance.
--   More tests for builder: Inspect cache more carefully. For example, the links may be broken.
+-   More tests for builder: Inspect cache more carefully. For example, what
+    happens when the links are broken?
 -   Nix expression and replacement test helpers.
 -   Property-based testing (e.g., generate arbitrary directives or even scripts).
 -   Python, make it happen.
+
+
+# Other ideas
+
+-   We create random caches and hashes during tests. We could write an Arbitrary
+    instance for `Config` to simplify this process.
 
