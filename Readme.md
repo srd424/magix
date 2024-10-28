@@ -10,8 +10,6 @@ package manager.
 
 # Next steps
 
--   `mtest` should be part of `nix flake check`; the Nixpkgs version used by the
-    Flake should also be used in the tests.
 -   Build process should use a lock. Use `filelock` and `withFileLock`. The
     library uses `flock`, which is part of `util-linux` (has to be added to
     flake). There should be a test checking the lock.

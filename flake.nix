@@ -42,6 +42,7 @@
         {
           packages = theseHpkgs // {
             default = theseHpkgs.magix;
+            magix = theseHpkgs.magix;
           };
 
           devShells.default = hpkgs.shellFor {
@@ -56,6 +57,7 @@
             doBenchmark = true;
             withHoogle = true;
 
+            NIX_PATH = "nixpkgs=${nixpkgs}";
             shellHook = ''
               export PATH="$PWD/scripts:$PATH"
             '';
