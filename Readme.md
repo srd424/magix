@@ -10,9 +10,6 @@ package manager.
 
 # Next steps
 
--   Build process should use a lock. Use `filelock` and `withFileLock`. The
-    library uses `flock`, which is part of `util-linux` (has to be added to
-    flake). There should be a test checking the lock.
 -   More tests for builder: Inspect cache more carefully. For example, what
     happens when the links are broken?
 -   Nix expression and replacement test helpers.

@@ -2,6 +2,8 @@
 
 set -e
 
+LANGUAGES=("bash" "haskell")
+
 # Clean up.
 echo "Cleaning up"
 cabal clean
@@ -13,15 +15,24 @@ cabal build all
 echo "Testing"
 cabal test
 
+# Sample scripts.
 CACHE_PATH=$(mktemp -d -t magix-XXXXXX)
 echo "Temporary cache path is ${CACHE_PATH}"
-
-# Sample scripts.
-LANGUAGES=("bash" "haskell")
 for l in "${LANGUAGES[@]}"; do
     echo "Running sample scripts for language ${l}"
     dir="test-scripts/${l}"
-    cabal run magix -- --cache-path "$CACHE_PATH" -v "${dir}/minimal"
-    cabal run magix -- --cache-path "$CACHE_PATH" -v "${dir}/minimal with spaces"
-    cabal run magix -- --cache-path "$CACHE_PATH" -v "${dir}/args" -h and other args
+    cabal run magix -- --cache-path "${CACHE_PATH}" -v "${dir}/minimal"
+    cabal run magix -- --cache-path "${CACHE_PATH}" -v "${dir}/minimal with spaces"
+    cabal run magix -- --cache-path "${CACHE_PATH}" -v "${dir}/args" -h and other args
+done
+
+# Parallel builds.
+CACHE_PATH_PARALLEL=$(mktemp -d -t magix-XXXXXX)
+echo "Temporary cache path for parallel builds is ${CACHE_PATH_PARALLEL}"
+for l in "${LANGUAGES[@]}"; do
+    echo "Running parallel builds for language ${l}"
+    dir="test-scripts/${l}"
+    parallel -N0 \
+        cabal run magix -- --cache-path "${CACHE_PATH_PARALLEL}" -v "${dir}/minimal" \
+        ::: {1..10}
 done
