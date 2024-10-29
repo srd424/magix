@@ -10,8 +10,6 @@ package manager.
 
 # Next steps
 
--   More tests for builder: Inspect cache more carefully. For example, what
-    happens when the links are broken?
 -   Nix expression and replacement test helpers.
 -   Property-based testing (e.g., generate arbitrary directives or even scripts).
 -   Python, make it happen.

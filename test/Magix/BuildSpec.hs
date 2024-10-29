@@ -28,7 +28,7 @@ spec = do
       bs <- getRandomFakeConfig >>= getBuildStatus
       bs `shouldBe` NeedToBuild
 
-    it "detects dangling symbolic links" $ do
+    it "detects dangling symbolic links to build result" $ do
       c <- getRandomFakeConfig
       let rp = c.resultLinkPath
       createSymbolicLink "nonexistent" rp
