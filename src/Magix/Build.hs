@@ -12,8 +12,9 @@
 module Magix.Build
   ( BuildStatus (..),
     getBuildStatus,
-    build,
     removeBuild,
+    build,
+    withBuildLock,
   )
 where
 
@@ -28,6 +29,7 @@ import System.Directory
     removeDirectoryRecursive,
     removeFile,
   )
+import System.FileLock (SharedExclusive (..), withFileLock)
 import System.Posix (createSymbolicLink)
 import System.Process (callProcess)
 import Prelude hiding (writeFile)
@@ -38,6 +40,18 @@ getBuildStatus :: Config -> IO BuildStatus
 getBuildStatus c = do
   resultDirExists <- doesDirectoryExist c.resultLinkPath
   pure $ if resultDirExists then HasBeenBuilt else NeedToBuild
+
+removeBuild :: Config -> IO ()
+removeBuild c = do
+  -- Link to script.
+  scriptLinkPathExists <- doesFileExist c.scriptLinkPath
+  when scriptLinkPathExists $ removeFile c.scriptLinkPath
+  -- Build directory.
+  buildDirExists <- doesDirectoryExist c.buildDir
+  when buildDirExists $ removeDirectoryRecursive c.buildDir
+  -- Result directory.
+  resultDirExists <- doesDirectoryExist c.resultLinkPath
+  when resultDirExists $ removeFile c.resultLinkPath
 
 build :: Config -> Text -> IO ()
 build c e = do
@@ -55,14 +69,5 @@ build c e = do
   -- Build.
   callProcess "nix-build" ["--out-link", c.resultLinkPath, c.buildDir]
 
-removeBuild :: Config -> IO ()
-removeBuild c = do
-  -- Link to script.
-  scriptLinkPathExists <- doesFileExist c.scriptLinkPath
-  when scriptLinkPathExists $ removeFile c.scriptLinkPath
-  -- Build directory.
-  buildDirExists <- doesDirectoryExist c.buildDir
-  when buildDirExists $ removeDirectoryRecursive c.buildDir
-  -- Result directory.
-  resultDirExists <- doesDirectoryExist c.resultLinkPath
-  when resultDirExists $ removeFile c.resultLinkPath
+withBuildLock :: Config -> IO () -> IO ()
+withBuildLock c f = withFileLock c.lockPath Exclusive $ const f

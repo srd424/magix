@@ -78,6 +78,7 @@ library
   build-depends:
     , base                  >=4.7 && <5
     , directory
+    , filelock
     , filepath
     , hashable
     , megaparsec

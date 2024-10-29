@@ -46,6 +46,7 @@ getRandomFakeConfig = do
       (tmp </> "fakeNixpkgsPath")
       hsh
       (tmp </> "fakeCacheDir")
+      (tmp </> "fakeLockPath")
       (tmp </> "fakeScriptLinkPath")
       (tmp </> "fakeBuildDir")
       (tmp </> "fakeBuildExprPath")

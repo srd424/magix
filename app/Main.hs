@@ -26,6 +26,7 @@ import Magix
     getNixExpression,
     getOptions,
   )
+import Magix.Build (withBuildLock)
 import Magix.Config (Config)
 import Magix.Directives (Directives)
 import Magix.Options (Rebuild (..), Verbosity (..))
@@ -101,16 +102,17 @@ main = do
   case forceBuild opts of
     ForceBuild -> do
       logD "Force build"
-      newBuild conf dirs
+      withBuildLock conf $ newBuild conf dirs
     ReuseBuildIfAvailable -> do
       logD "Reuse build if available"
       logD "Checking build status"
-      buildStatus <- getBuildStatus conf
-      case buildStatus of
-        HasBeenBuilt -> logD "Script has already been built"
-        NeedToBuild -> do
-          logD "Need to build"
-          newBuild conf dirs
+      withBuildLock conf $ do
+        buildStatus <- getBuildStatus conf
+        case buildStatus of
+          HasBeenBuilt -> logD "Script has already been built"
+          NeedToBuild -> do
+            logD "Need to build"
+            newBuild conf dirs
 
   logD "Running"
   run opts conf
