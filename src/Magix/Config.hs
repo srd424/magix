@@ -19,7 +19,7 @@ import Data.Hashable (hash)
 import Data.Text (Text)
 import Magix.NixpkgsPath (getDefaultNixpkgsPath)
 import Magix.Options (Options (..))
-import Magix.Paths (getBuildDir, getBuildExprPath, getResultLinkPath, getScriptLinkPath)
+import Magix.Paths (getBuildDir, getBuildExprPath, getLockPath, getResultLinkPath, getScriptLinkPath)
 import System.Directory (canonicalizePath)
 import System.Environment.XDG.BaseDir (getUserCacheDir)
 import System.FilePath (takeBaseName)
@@ -34,6 +34,8 @@ data Config = Config
     magixHash :: !Int,
     -- | Cache directory containing Nix expressions and build results.
     cacheDir :: !FilePath,
+    -- | File used for locking the build.
+    lockPath :: !FilePath,
     -- | Sanitized path of the link to the original script.
     scriptLinkPath :: !FilePath,
     -- | Directory containing the Nix expression building the result.
@@ -61,10 +63,11 @@ getConfig o x = do
   np <- maybe getDefaultNixpkgsPathOrFail canonicalizePath o.nixpkgsPath
   let nm = takeBaseName p
       ha = hash (x, np)
-      lp = getScriptLinkPath c nm ha
-      bd = getBuildDir c nm ha
+      lo = getLockPath c ha nm
+      lp = getScriptLinkPath c ha nm
+      bd = getBuildDir c ha nm
       be = getBuildExprPath bd
-      rd = getResultLinkPath c nm ha
+      rd = getResultLinkPath c ha nm
   pure $
     Config
       { scriptPath = p',
@@ -72,6 +75,7 @@ getConfig o x = do
         magixHash = ha,
         nixpkgsPath = np,
         cacheDir = c,
+        lockPath = lo,
         scriptLinkPath = lp,
         buildDir = bd,
         buildExprPath = be,

@@ -12,6 +12,7 @@
 module Magix.Paths
   ( getScriptLinkPath,
     getBuildDir,
+    getLockPath,
     getBuildExprPath,
     getResultLinkPath,
   )
@@ -31,19 +32,24 @@ replaceProblematicChars c
   | isAlphaNum c = c
   | otherwise = '-'
 
-getScriptLinkPath :: FilePath -> String -> Int -> FilePath
-getScriptLinkPath cacheDir name hash =
+getCommonPrefix :: FilePath -> Int -> String -> FilePath
+getCommonPrefix cacheDir hash name =
   cacheDir
     </> showHash hash
       <> "-"
       <> map replaceProblematicChars name
-      <> "-script"
 
-getBuildDir :: FilePath -> String -> Int -> FilePath
-getBuildDir cacheDir name hash = cacheDir </> showHash hash <> "-" <> name <> "-build"
+getLockPath :: FilePath -> Int -> String -> FilePath
+getLockPath cacheDir hash name = getCommonPrefix cacheDir hash name <> ".lock"
+
+getScriptLinkPath :: FilePath -> Int -> String -> FilePath
+getScriptLinkPath cacheDir hash name = getCommonPrefix cacheDir hash name <> "-script"
+
+getBuildDir :: FilePath -> Int -> String -> FilePath
+getBuildDir cacheDir hash name = getCommonPrefix cacheDir hash name <> "-build"
 
 getBuildExprPath :: FilePath -> FilePath
 getBuildExprPath buildDir = buildDir </> "default.nix"
 
-getResultLinkPath :: FilePath -> String -> Int -> FilePath
-getResultLinkPath cacheDir name hash = cacheDir </> showHash hash <> "-" <> name <> "-result"
+getResultLinkPath :: FilePath -> Int -> String -> FilePath
+getResultLinkPath cacheDir hash name = getCommonPrefix cacheDir hash name <> "-result"
