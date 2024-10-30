@@ -11,11 +11,6 @@ package manager.
 # Next steps
 
 -   Property-based testing (e.g., generate arbitrary directives or even scripts).
--   Python, make it happen.
-
-
-# Other ideas
-
 -   We create random caches and hashes during tests. We could write an Arbitrary
     instance for `Config` to simplify this process.
 

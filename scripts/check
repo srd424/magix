@@ -2,7 +2,7 @@
 
 set -e
 
-LANGUAGES=("bash" "haskell")
+LANGUAGES=("bash" "haskell" "python")
 
 # Clean up.
 echo "Cleaning up"

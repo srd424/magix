@@ -24,27 +24,31 @@ import Data.Text (Text)
 import Magix.Directives.Common (Parser)
 import Magix.Languages.Bash.Directives (BashDirectives (..), pBashDirectives)
 import Magix.Languages.Haskell.Directives (HaskellDirectives (..), pHaskellDirectives)
+import Magix.Languages.Python.Directives (PythonDirectives, pPythonDirectives)
 import Text.Megaparsec (MonadParsec (..), chunk, errorBundlePretty, parse)
 import Text.Megaparsec.Char (space1)
 import Prelude hiding (readFile)
 
 data Directives
-  = Haskell !HaskellDirectives
-  | Bash !BashDirectives
+  = Bash !BashDirectives
+  | Haskell !HaskellDirectives
+  | Python !PythonDirectives
   deriving (Eq, Show)
 
 -- | Use the language name to find the Nix expression template.
 getLanguageName :: Directives -> String
-getLanguageName (Haskell _) = "Haskell"
 getLanguageName (Bash _) = "Bash"
+getLanguageName (Haskell _) = "Haskell"
+getLanguageName (Python _) = "Python"
 
 pShebang :: Parser Text
 pShebang = chunk "#!/usr/bin/env magix"
 
 pLanguageSpecificDirectives :: Parser Directives
 pLanguageSpecificDirectives =
-  (Haskell <$> try pHaskellDirectives)
-    <|> (Bash <$> pBashDirectives)
+  (Bash <$> try pBashDirectives)
+    <|> (Haskell <$> try pHaskellDirectives)
+    <|> (Python <$> pPythonDirectives)
 
 pDirectives :: Parser Directives
 pDirectives = pShebang *> space1 *> pLanguageSpecificDirectives

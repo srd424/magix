@@ -24,6 +24,7 @@ extra-source-files:
 data-files:
   src/Magix/Languages/Bash/Template.nix
   src/Magix/Languages/Haskell/Template.nix
+  src/Magix/Languages/Python/Template.nix
 
 source-repository head
   location: https://github.com/dschrempf/magix
@@ -66,6 +67,8 @@ library
     Magix.Languages.Bash.Expression
     Magix.Languages.Haskell.Directives
     Magix.Languages.Haskell.Expression
+    Magix.Languages.Python.Directives
+    Magix.Languages.Python.Expression
     Magix.NixpkgsPath
     Magix.Options
     Magix.Paths
@@ -113,6 +116,8 @@ test-suite test-magix
     Magix.Languages.Bash.ExpressionSpec
     Magix.Languages.Haskell.DirectivesSpec
     Magix.Languages.Haskell.ExpressionSpec
+    Magix.Languages.Python.DirectivesSpec
+    Magix.Languages.Python.ExpressionSpec
     Magix.NixpkgsPathSpec
     Magix.Tools
 

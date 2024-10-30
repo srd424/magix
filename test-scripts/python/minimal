@@ -1,0 +1,8 @@
+#!/usr/bin/env magix
+#!magix python
+#!pythonPackages numpy
+
+from numpy import array
+
+xs = array([1,2,3])
+print(xs)

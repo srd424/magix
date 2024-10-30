@@ -23,6 +23,7 @@ import Magix.Config (Config (..))
 import Magix.Directives (Directives (..), getLanguageName)
 import Magix.Languages.Bash.Expression (getBashReplacements)
 import Magix.Languages.Haskell.Expression (getHaskellReplacements)
+import Magix.Languages.Python.Expression (getPythonReplacements)
 import Paths_magix (getDataFileName)
 import Prelude hiding (readFile)
 
@@ -42,8 +43,9 @@ getCommonReplacements c =
   ]
 
 getLanguageReplacements :: Directives -> [(Text, Text)]
-getLanguageReplacements (Haskell ds) = getHaskellReplacements ds
 getLanguageReplacements (Bash ds) = getBashReplacements ds
+getLanguageReplacements (Haskell ds) = getHaskellReplacements ds
+getLanguageReplacements (Python ds) = getPythonReplacements ds
 
 getReplacements :: Config -> Directives -> [(Text, Text)]
 getReplacements c ds = getCommonReplacements c ++ getLanguageReplacements ds

@@ -1,0 +1,6 @@
+#!/usr/bin/env magix
+#!magix python
+
+import sys
+
+print("Arguments are:", sys.argv)
