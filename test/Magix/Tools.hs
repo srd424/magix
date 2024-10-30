@@ -10,25 +10,21 @@
 --
 -- Creation date: Mon Oct 21 21:56:26 2024.
 module Magix.Tools
-  ( doesNotContainTemplates,
-    containsSpaceSeparatedValues,
-    getRandomFakeConfig,
+  ( getRandomFakeConfig,
+    testDirectives,
   )
 where
 
 import Control.Monad (replicateM)
 import Data.Text (Text, isInfixOf, unwords)
 import Magix.Config (Config (..))
+import Magix.Directives (Directives, getLanguageName)
+import Magix.Expression (getNixExpression, getReplacements, getTemplate)
 import System.Directory (createDirectory, getTemporaryDirectory)
 import System.FilePath ((</>))
 import System.Random.Stateful (randomIO, randomRIO)
+import Test.Hspec (Spec, describe, it, shouldBe, shouldSatisfy)
 import Prelude hiding (unwords)
-
-doesNotContainTemplates :: Text -> Bool
-doesNotContainTemplates = not . isInfixOf "__"
-
-containsSpaceSeparatedValues :: [Text] -> Text -> Bool
-containsSpaceSeparatedValues xs = isInfixOf (unwords xs)
 
 getRandomString :: IO String
 getRandomString = replicateM 40 $ randomRIO ('a', 'z')
@@ -51,3 +47,35 @@ getRandomFakeConfig = do
       (tmp </> "fakeBuildDir")
       (tmp </> "fakeBuildExprPath")
       (tmp </> "fakeResultDir")
+
+allReplacementsUsed :: Text -> [(Text, Text)] -> Bool
+allReplacementsUsed x = all (\(r, _) -> r `isInfixOf` x)
+
+doesNotContainTemplates :: Text -> Bool
+doesNotContainTemplates = not . isInfixOf "__"
+
+containsSpaceSeparatedValues :: [Text] -> Text -> Bool
+containsSpaceSeparatedValues xs = isInfixOf (unwords xs)
+
+testDirectives :: Directives -> [[Text]] -> Spec
+testDirectives directives values = do
+  describe (withName "getReplacements") $ do
+    it "all replacements should be used as placeholders in the templates" $ do
+      config <- getRandomFakeConfig
+      templ <- getTemplate languageName
+      allReplacementsUsed templ (getReplacements config directives) `shouldBe` True
+
+  describe (withName "getNixExpression") $ do
+    it "all placeholders in templates should be replaced" $ do
+      config <- getRandomFakeConfig
+      expr <- getNixExpression config directives
+      expr `shouldSatisfy` doesNotContainTemplates
+
+  describe (withName "getNixExpression") $ do
+    it "works correctly for some sample data" $ do
+      config <- getRandomFakeConfig
+      expr <- getNixExpression config directives
+      sequence_ [expr `shouldSatisfy` containsSpaceSeparatedValues value | value <- values]
+  where
+    languageName = getLanguageName directives
+    withName xs = "[" <> languageName <> "] " <> xs

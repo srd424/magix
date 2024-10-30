@@ -10,7 +10,6 @@ package manager.
 
 # Next steps
 
--   Nix expression and replacement test helpers.
 -   Property-based testing (e.g., generate arbitrary directives or even scripts).
 -   Python, make it happen.
 
