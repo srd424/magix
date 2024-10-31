@@ -63,6 +63,7 @@ library
     Magix.Directives
     Magix.Directives.Common
     Magix.Expression
+    Magix.Hash
     Magix.Languages.Bash.Directives
     Magix.Languages.Bash.Expression
     Magix.Languages.Haskell.Directives

@@ -16,8 +16,8 @@ module Magix.Config
 where
 
 import Control.Exception (throwIO)
-import Data.Hashable (hash)
 import Data.Text (Text)
+import Magix.Hash (getMagixHash)
 import Magix.NixpkgsPath (getDefaultNixpkgsPath)
 import Magix.Options (Options (..))
 import Magix.Paths (getBuildDir, getBuildExprPath, getLockPath, getResultLinkPath, getScriptLinkPath)
@@ -63,7 +63,7 @@ getConfig o x = do
   c <- maybe (getUserCacheDir "magix") canonicalizePath o.cachePath
   np <- maybe getDefaultNixpkgsPathOrFail canonicalizePath o.nixpkgsPath
   let nm = takeBaseName p
-      ha = hash (x, np)
+      ha = getMagixHash np x
       lo = getLockPath c ha nm
       lp = getScriptLinkPath c ha nm
       bd = getBuildDir c ha nm
