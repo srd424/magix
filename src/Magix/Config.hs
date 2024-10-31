@@ -15,6 +15,7 @@ module Magix.Config
   )
 where
 
+import Control.Exception (throwIO)
 import Data.Hashable (hash)
 import Data.Text (Text)
 import Magix.NixpkgsPath (getDefaultNixpkgsPath)
@@ -53,7 +54,7 @@ getDefaultNixpkgsPathOrFail = do
   case mr of
     Left err -> do
       putStrLn "Could not retrieve Nixpkgs path from NIX_PATH"
-      error err
+      throwIO err
     Right np -> pure np
 
 getConfig :: Options -> Text -> IO Config

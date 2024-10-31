@@ -14,22 +14,14 @@ module Main
   )
 where
 
+import Control.Exception (throwIO)
 import Data.Text (unpack)
 import Data.Text.IO (readFile)
-import Magix
-  ( BuildStatus (..),
-    Options (..),
-    build,
-    getBuildStatus,
-    getConfig,
-    getDirectives,
-    getNixExpression,
-    getOptions,
-  )
-import Magix.Build (withBuildLock)
-import Magix.Config (Config)
-import Magix.Directives (Directives)
-import Magix.Options (Rebuild (..), Verbosity (..))
+import Magix.Build (BuildStatus (..), build, getBuildStatus, withBuildLock)
+import Magix.Config (Config, getConfig)
+import Magix.Directives (Directives, getDirectives)
+import Magix.Expression (getNixExpression)
+import Magix.Options (Options (..), Rebuild (..), Verbosity (..), getOptions)
 import Magix.Run (run)
 import System.IO (Handle, stderr)
 import System.Log.Formatter (simpleLogFormatter)
@@ -95,7 +87,7 @@ main = do
 
   logD "Parsing directives"
   dirs <- case getDirectives p f of
-    Left e -> logE "Failed parsing directives" >> error e
+    Left e -> logE "Failed parsing directives" >> throwIO e
     Right ds -> pure ds
   logD $ "Directives are " <> show dirs
 

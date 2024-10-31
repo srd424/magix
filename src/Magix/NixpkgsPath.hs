@@ -16,6 +16,7 @@ module Magix.NixpkgsPath
   )
 where
 
+import Control.Exception (Exception)
 import Data.Bifunctor (Bifunctor (..))
 import Data.Char (isSpace)
 import Data.Void (Void)
@@ -37,7 +38,16 @@ pNixpkgsPath =
 pNixPath :: Parser FilePath
 pNixPath = pNixpkgsPath <|> (anySingle *> pNixPath)
 
-getDefaultNixpkgsPath :: IO (Either String FilePath)
+data NoNixpkgsError = NoNixpkgsError
+  { _nixPath :: !String,
+    _err :: !String
+  }
+  deriving (Eq, Show)
+
+instance Exception NoNixpkgsError
+
+getDefaultNixpkgsPath :: IO (Either NoNixpkgsError FilePath)
 getDefaultNixpkgsPath = do
   nixPath <- getEnv "NIX_PATH"
-  pure $ first errorBundlePretty $ parse pNixPath "" nixPath
+  let fromErr e = NoNixpkgsError nixPath $ errorBundlePretty e
+  pure $ first fromErr $ parse pNixPath "" nixPath

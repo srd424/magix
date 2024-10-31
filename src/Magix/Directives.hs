@@ -19,6 +19,7 @@ module Magix.Directives
 where
 
 import Control.Applicative ((<|>))
+import Control.Exception (Exception)
 import Data.Bifunctor (Bifunctor (..))
 import Data.Text (Text)
 import Magix.Directives.Common (Parser)
@@ -53,5 +54,15 @@ pLanguageSpecificDirectives =
 pDirectives :: Parser Directives
 pDirectives = pShebang *> space1 *> pLanguageSpecificDirectives
 
-getDirectives :: FilePath -> Text -> Either String Directives
-getDirectives p x = first errorBundlePretty $ parse pDirectives p x
+data DirectivesParseError = DirectivesParseError
+  { _directives :: !Text,
+    _err :: !String
+  }
+  deriving (Eq, Show)
+
+instance Exception DirectivesParseError
+
+getDirectives :: FilePath -> Text -> Either DirectivesParseError Directives
+getDirectives p x = first fromErr $ parse pDirectives p x
+  where
+    fromErr e = DirectivesParseError x $ errorBundlePretty e
