@@ -16,7 +16,9 @@ module Magix.Tools
 where
 
 import Control.Monad (replicateM)
+import Data.ByteString (ByteString, pack)
 import Data.Text (Text, isInfixOf, unwords)
+import Data.Word (Word8)
 import Magix.Config (Config (..))
 import Magix.Directives (Directives, getLanguageName)
 import Magix.Expression (getNixExpression, getReplacements, getTemplate)
@@ -29,12 +31,15 @@ import Prelude hiding (unwords)
 getRandomString :: IO String
 getRandomString = replicateM 40 $ randomRIO ('a', 'z')
 
+getRandomByteString :: IO ByteString
+getRandomByteString = pack <$> replicateM 40 randomIO
+
 getRandomFakeConfig :: IO Config
 getRandomFakeConfig = do
   dir <- ("magix-" <>) <$> getRandomString
   tmp <- (</> dir) <$> getTemporaryDirectory
   createDirectory tmp
-  hsh <- abs <$> (randomIO :: IO Int)
+  hsh <- getRandomByteString
   pure $
     Config
       (tmp </> "fakeScriptPath")

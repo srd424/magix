@@ -80,12 +80,12 @@ main = do
 
   let p = scriptPath opts
   logD $ "Reading script at path " <> p
-  f <- readFile p
 
-  conf <- getConfig opts f
+  conf <- getConfig opts
   logD $ "Magix configuration is " <> show conf
 
   logD "Parsing directives"
+  f <- readFile p
   dirs <- case getDirectives p f of
     Left e -> logE "Failed parsing directives" >> throwIO e
     Right ds -> pure ds

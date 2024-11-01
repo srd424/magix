@@ -16,7 +16,7 @@ module Magix.Config
 where
 
 import Control.Exception (throwIO)
-import Data.Text (Text)
+import Data.ByteString (ByteString, readFile)
 import Magix.Hash (getMagixHash)
 import Magix.NixpkgsPath (getDefaultNixpkgsPath)
 import Magix.Options (Options (..))
@@ -32,7 +32,7 @@ data Config = Config
     -- | The Magix hash includes the hash of the script directory and the path
     -- of the Nixpkgs directory.
     nixpkgsPath :: !FilePath,
-    magixHash :: !Int,
+    magixHash :: !ByteString,
     -- | Cache directory containing Nix expressions and build results.
     cacheDir :: !FilePath,
     -- | File used for locking the build.
@@ -57,11 +57,12 @@ getDefaultNixpkgsPathOrFail = do
       throwIO err
     Right np -> pure np
 
-getConfig :: Options -> Text -> IO Config
-getConfig o x = do
+getConfig :: Options -> IO Config
+getConfig o = do
   p' <- canonicalizePath p
   c <- maybe (getUserCacheDir "magix") canonicalizePath o.cachePath
   np <- maybe getDefaultNixpkgsPathOrFail canonicalizePath o.nixpkgsPath
+  x <- readFile o.scriptPath
   let nm = takeBaseName p
       ha = getMagixHash np x
       lo = getLockPath c ha nm

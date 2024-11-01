@@ -18,38 +18,38 @@ module Magix.Paths
   )
 where
 
+import Data.ByteString (ByteString)
+import Data.ByteString.Builder (byteStringHex, toLazyByteString)
+import Data.ByteString.Lazy.Char8 (unpack)
 import Data.Char (isAlphaNum)
-import Numeric (showHex)
 import System.FilePath ((</>))
 
-showHash :: Int -> String
-showHash hash
-  | hash < 0 = '1' : showHex (-hash) ""
-  | otherwise = '0' : showHex hash ""
+showHash :: ByteString -> String
+showHash = unpack . toLazyByteString . byteStringHex
 
 replaceProblematicChars :: Char -> Char
 replaceProblematicChars c
   | isAlphaNum c = c
   | otherwise = '-'
 
-getCommonPrefix :: FilePath -> Int -> String -> FilePath
+getCommonPrefix :: FilePath -> ByteString -> String -> FilePath
 getCommonPrefix cacheDir hash name =
   cacheDir
     </> showHash hash
       <> "-"
       <> map replaceProblematicChars name
 
-getLockPath :: FilePath -> Int -> String -> FilePath
+getLockPath :: FilePath -> ByteString -> String -> FilePath
 getLockPath cacheDir hash name = getCommonPrefix cacheDir hash name <> ".lock"
 
-getScriptLinkPath :: FilePath -> Int -> String -> FilePath
+getScriptLinkPath :: FilePath -> ByteString -> String -> FilePath
 getScriptLinkPath cacheDir hash name = getCommonPrefix cacheDir hash name <> "-script"
 
-getBuildDir :: FilePath -> Int -> String -> FilePath
+getBuildDir :: FilePath -> ByteString -> String -> FilePath
 getBuildDir cacheDir hash name = getCommonPrefix cacheDir hash name <> "-build"
 
 getBuildExprPath :: FilePath -> FilePath
 getBuildExprPath buildDir = buildDir </> "default.nix"
 
-getResultLinkPath :: FilePath -> Int -> String -> FilePath
+getResultLinkPath :: FilePath -> ByteString -> String -> FilePath
 getResultLinkPath cacheDir hash name = getCommonPrefix cacheDir hash name <> "-result"

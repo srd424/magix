@@ -38,21 +38,21 @@ common common
 
 common lib
   default-language: GHC2021
-  ghc-options:      -Wall -Wunused-packages -Wredundant-constraints
+  ghc-options:      -Werror -Wunused-packages -Wredundant-constraints
 
 common test
   default-language: GHC2021
-  ghc-options:      -Wall -Wunused-packages -Wredundant-constraints
+  ghc-options:      -Werror -Wunused-packages -Wredundant-constraints
 
 common bench
   default-language: GHC2021
-  ghc-options:      -Wall -Wunused-packages -Wredundant-constraints
+  ghc-options:      -Werror -Wunused-packages -Wredundant-constraints
 
 common exec
   default-language: GHC2021
   ghc-options:
-    -Wall -Wunused-packages -Wredundant-constraints -threaded -rtsopts
-    -with-rtsopts=-N
+    -Werror -Wunused-packages -Wredundant-constraints -threaded
+    -rtsopts -with-rtsopts=-N
 
 library
   import:          common, lib
@@ -81,10 +81,11 @@ library
   ghc-options:
   build-depends:
     , base                  >=4.7 && <5
+    , bytestring
+    , cryptohash-sha256
     , directory
     , filelock
     , filepath
-    , hashable
     , megaparsec
     , optparse-applicative
     , process
@@ -127,6 +128,7 @@ test-suite test-magix
   type:            exitcode-stdio-1.0
   build-depends:
     , base        >=4.7 && <5
+    , bytestring
     , directory
     , filepath
     , hspec

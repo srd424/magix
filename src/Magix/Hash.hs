@@ -14,9 +14,21 @@ module Magix.Hash
   )
 where
 
-import Data.Hashable (hash)
-import Data.Text (Text)
+import Crypto.Hash.SHA256 (finalize, init, update)
+import Data.ByteString (ByteString)
+import Data.Foldable (Foldable (..))
+import Data.Text (pack)
+import Data.Text.Encoding (encodeUtf8)
 import Paths_magix (version)
+import Prelude hiding (init)
 
-getMagixHash :: FilePath -> Text -> Int
-getMagixHash nixpkgsPath scriptContents = hash (nixpkgsPath, version, scriptContents)
+getMagixHash :: FilePath -> ByteString -> ByteString
+getMagixHash nixpkgsPath scriptContents =
+  finalize $
+    foldl'
+      update
+      init
+      [ encodeUtf8 $ pack nixpkgsPath,
+        encodeUtf8 $ pack $ show version,
+        scriptContents
+      ]
