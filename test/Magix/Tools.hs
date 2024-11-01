@@ -11,11 +11,13 @@
 -- Creation date: Mon Oct 21 21:56:26 2024.
 module Magix.Tools
   ( getRandomFakeConfig,
+    parse',
     testExpression,
   )
 where
 
 import Control.Monad (replicateM)
+import Data.Bifunctor (Bifunctor (..))
 import Data.ByteString (ByteString, pack)
 import Data.Text (Text, isInfixOf, unwords)
 import Data.Word (Word8)
@@ -26,6 +28,14 @@ import System.Directory (createDirectory, getTemporaryDirectory)
 import System.FilePath ((</>))
 import System.Random.Stateful (randomIO, randomRIO)
 import Test.Hspec (Spec, describe, it, shouldBe, shouldSatisfy)
+import Text.Megaparsec
+  ( Parsec,
+    ShowErrorComponent,
+    TraversableStream,
+    VisualStream,
+    errorBundlePretty,
+    parse,
+  )
 import Prelude hiding (unwords)
 
 getRandomString :: IO String
@@ -52,6 +62,10 @@ getRandomFakeConfig = do
       (tmp </> "fakeBuildDir")
       (tmp </> "fakeBuildExprPath")
       (tmp </> "fakeResultDir")
+
+parse' ::
+  (VisualStream s, TraversableStream s, ShowErrorComponent e) => Parsec e s a -> s -> a
+parse' p x = either (error . errorBundlePretty) id $ parse p "" x
 
 allReplacementsUsed :: Text -> [(Text, Text)] -> Bool
 allReplacementsUsed x = all (\(r, _) -> r `isInfixOf` x)

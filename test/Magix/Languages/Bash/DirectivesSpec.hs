@@ -16,8 +16,8 @@ where
 
 import Data.Text (Text, unlines)
 import Magix.Languages.Bash.Directives (BashDirectives (..), pBashDirectives)
+import Magix.Tools (parse')
 import Test.Hspec (Spec, describe, it, shouldBe)
-import Text.Megaparsec (parse)
 import Prelude hiding (unlines)
 
 empty :: Text
@@ -43,13 +43,10 @@ spec :: Spec
 spec = do
   describe "pBashDirectives" $ do
     it "parses empty directives" $ do
-      parse pBashDirectives "" empty
-        `shouldBe` Right (BashDirectives [])
+      parse' pBashDirectives empty `shouldBe` BashDirectives []
 
     it "parses minimal sample directives" $ do
-      parse pBashDirectives "" minimal
-        `shouldBe` Right (BashDirectives ["jq"])
+      parse' pBashDirectives minimal `shouldBe` BashDirectives ["jq"]
 
     it "parses more interesting sample directives with multiple declarations" $ do
-      parse pBashDirectives "" multiple
-        `shouldBe` Right (BashDirectives ["a", "b", "c", "d", "e", "f"])
+      parse' pBashDirectives multiple `shouldBe` BashDirectives ["a", "b", "c", "d", "e", "f"]

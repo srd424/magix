@@ -17,7 +17,7 @@ module Magix.Directives.Common
   )
 where
 
-import Control.Applicative (Alternative (..))
+import Control.Applicative (Alternative (..), optional)
 import Data.Functor (($>))
 import Data.Text (Text, pack)
 import Data.Void (Void)
@@ -57,7 +57,7 @@ pMagixDirective x = pDirectiveWithValue "magix" (chunk x) $> ()
 
 pLanguageDirectives :: Text -> Parser b -> ([b] -> a) -> Parser a
 pLanguageDirectives language pLanguageDirective combineDirectives = do
-  pMagixDirective language <* hspace
-  ds <- (try newline *> sepEndBy pLanguageDirective newline) <|> pure []
+  pMagixDirective language <* hspace <* optional newline
+  ds <- sepEndBy pLanguageDirective (hspace <* newline)
   notFollowedBy $ chunk "#!"
   pure $ combineDirectives ds

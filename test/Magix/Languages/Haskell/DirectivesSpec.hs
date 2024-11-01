@@ -16,8 +16,8 @@ where
 
 import Data.Text (Text, unlines)
 import Magix.Languages.Haskell.Directives (HaskellDirectives (..), pHaskellDirectives)
+import Magix.Tools (parse')
 import Test.Hspec (Spec, describe, it, shouldBe)
-import Text.Megaparsec (parse)
 import Prelude hiding (unlines)
 
 empty :: Text
@@ -47,13 +47,11 @@ spec :: Spec
 spec = do
   describe "pHaskellDirectives" $ do
     it "parses empty directives" $ do
-      parse pHaskellDirectives "" empty
-        `shouldBe` Right (HaskellDirectives [] [])
+      parse' pHaskellDirectives empty `shouldBe` HaskellDirectives [] []
 
     it "parses minimal sample directives" $ do
-      parse pHaskellDirectives "" minimal
-        `shouldBe` Right (HaskellDirectives ["bytestring"] ["-threaded"])
+      parse' pHaskellDirectives minimal `shouldBe` HaskellDirectives ["bytestring"] ["-threaded"]
 
     it "parses more interesting sample directives with multiple declarations" $ do
-      parse pHaskellDirectives "" multiple
-        `shouldBe` Right (HaskellDirectives ["a", "b", "c", "d", "e", "f"] ["1", "2", "3", "4"])
+      parse' pHaskellDirectives multiple
+        `shouldBe` HaskellDirectives ["a", "b", "c", "d", "e", "f"] ["1", "2", "3", "4"]
