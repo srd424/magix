@@ -11,7 +11,7 @@
 -- Creation date: Mon Oct 21 21:56:26 2024.
 module Magix.Tools
   ( getRandomFakeConfig,
-    testDirectives,
+    testExpression,
   )
 where
 
@@ -62,8 +62,8 @@ doesNotContainTemplates = not . isInfixOf "__"
 containsSpaceSeparatedValues :: [Text] -> Text -> Bool
 containsSpaceSeparatedValues xs = isInfixOf (unwords xs)
 
-testDirectives :: Directives -> [[Text]] -> Spec
-testDirectives directives values = do
+testExpression :: Directives -> [[Text]] -> Spec
+testExpression directives values = do
   describe (withName "getReplacements") $ do
     it "all replacements should be used as placeholders in the templates" $ do
       config <- getRandomFakeConfig

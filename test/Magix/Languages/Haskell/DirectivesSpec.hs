@@ -20,6 +20,9 @@ import Test.Hspec (Spec, describe, it, shouldBe)
 import Text.Megaparsec (parse)
 import Prelude hiding (unlines)
 
+empty :: Text
+empty = "#!magix haskell"
+
 minimal :: Text
 minimal =
   unlines
@@ -43,11 +46,14 @@ multiple =
 spec :: Spec
 spec = do
   describe "pHaskellDirectives" $ do
+    it "parses empty directives" $ do
+      parse pHaskellDirectives "" empty
+        `shouldBe` Right (HaskellDirectives [] [])
+
     it "parses minimal sample directives" $ do
       parse pHaskellDirectives "" minimal
         `shouldBe` Right (HaskellDirectives ["bytestring"] ["-threaded"])
 
-  describe "pHaskellDirectives" $ do
     it "parses more interesting sample directives with multiple declarations" $ do
       parse pHaskellDirectives "" multiple
         `shouldBe` Right (HaskellDirectives ["a", "b", "c", "d", "e", "f"] ["1", "2", "3", "4"])

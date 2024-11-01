@@ -20,6 +20,9 @@ import Test.Hspec (Spec, describe, it, shouldBe)
 import Text.Megaparsec (parse)
 import Prelude hiding (unlines)
 
+empty :: Text
+empty = "#!magix python"
+
 minimal :: Text
 minimal =
   unlines
@@ -39,11 +42,14 @@ multiple =
 spec :: Spec
 spec = do
   describe "pPythonDirectives" $ do
+    it "parses empty directives" $ do
+      parse pPythonDirectives "" empty
+        `shouldBe` Right (PythonDirectives [])
+
     it "parses minimal sample directives" $ do
       parse pPythonDirectives "" minimal
         `shouldBe` Right (PythonDirectives ["numpy"])
 
-  describe "pPythonDirectives" $ do
     it "parses more interesting sample directives with multiple declarations" $ do
       parse pPythonDirectives "" multiple
         `shouldBe` Right (PythonDirectives ["a", "b", "c", "d", "e", "f"])

@@ -20,6 +20,9 @@ import Test.Hspec (Spec, describe, it, shouldBe)
 import Text.Megaparsec (parse)
 import Prelude hiding (unlines)
 
+empty :: Text
+empty = "#!magix bash"
+
 minimal :: Text
 minimal =
   unlines
@@ -39,11 +42,14 @@ multiple =
 spec :: Spec
 spec = do
   describe "pBashDirectives" $ do
+    it "parses empty directives" $ do
+      parse pBashDirectives "" empty
+        `shouldBe` Right (BashDirectives [])
+
     it "parses minimal sample directives" $ do
       parse pBashDirectives "" minimal
         `shouldBe` Right (BashDirectives ["jq"])
 
-  describe "pBashDirectives" $ do
     it "parses more interesting sample directives with multiple declarations" $ do
       parse pBashDirectives "" multiple
         `shouldBe` Right (BashDirectives ["a", "b", "c", "d", "e", "f"])

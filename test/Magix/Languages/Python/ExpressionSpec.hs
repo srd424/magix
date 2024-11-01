@@ -17,7 +17,7 @@ where
 import Data.Text (Text)
 import Magix.Directives (Directives (..))
 import Magix.Languages.Python.Directives (PythonDirectives (..))
-import Magix.Tools (testDirectives)
+import Magix.Tools (testExpression)
 import Test.Hspec (Spec)
 
 pythonPackages :: [Text]
@@ -27,4 +27,4 @@ pythonDirectives :: Directives
 pythonDirectives = Python $ PythonDirectives pythonPackages
 
 spec :: Spec
-spec = testDirectives pythonDirectives [pythonPackages]
+spec = testExpression pythonDirectives [pythonPackages]

@@ -17,7 +17,7 @@ where
 import Data.Text (Text)
 import Magix.Directives (Directives (..))
 import Magix.Languages.Haskell.Directives (HaskellDirectives (..))
-import Magix.Tools (testDirectives)
+import Magix.Tools (testExpression)
 import Test.Hspec (Spec)
 
 haskellPackages :: [Text]
@@ -30,4 +30,4 @@ haskellDirectives :: Directives
 haskellDirectives = Haskell $ HaskellDirectives haskellPackages ghcFlags
 
 spec :: Spec
-spec = testDirectives haskellDirectives [haskellPackages, ghcFlags]
+spec = testExpression haskellDirectives [haskellPackages, ghcFlags]

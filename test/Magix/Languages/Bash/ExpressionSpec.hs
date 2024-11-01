@@ -17,7 +17,7 @@ where
 import Data.Text (Text)
 import Magix.Directives (Directives (..))
 import Magix.Languages.Bash.Directives (BashDirectives (..))
-import Magix.Tools (testDirectives)
+import Magix.Tools (testExpression)
 import Test.Hspec (Spec)
 
 runtimeInputs :: [Text]
@@ -27,4 +27,4 @@ bashDirectives :: Directives
 bashDirectives = Bash $ BashDirectives runtimeInputs
 
 spec :: Spec
-spec = testDirectives bashDirectives [runtimeInputs]
+spec = testExpression bashDirectives [runtimeInputs]

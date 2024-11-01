@@ -1,0 +1,4 @@
+#!/usr/bin/env magix
+#!magix python
+
+print("empty")

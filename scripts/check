@@ -21,6 +21,7 @@ echo "Temporary cache path is ${CACHE_PATH}"
 for l in "${LANGUAGES[@]}"; do
     echo "Running sample scripts for language ${l}"
     dir="test-scripts/${l}"
+    cabal run magix -- --cache-path "${CACHE_PATH}" -v "${dir}/empty"
     cabal run magix -- --cache-path "${CACHE_PATH}" -v "${dir}/minimal"
     cabal run magix -- --cache-path "${CACHE_PATH}" -v "${dir}/minimal with spaces"
     cabal run magix -- --cache-path "${CACHE_PATH}" -v "${dir}/args" -h and other args

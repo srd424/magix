@@ -21,7 +21,14 @@ import Control.Applicative (Alternative (..))
 import Data.Functor (($>))
 import Data.Text (Text, pack)
 import Data.Void (Void)
-import Text.Megaparsec (MonadParsec (notFollowedBy), Parsec, chunk, sepBy1, sepEndBy)
+import Text.Megaparsec
+  ( MonadParsec (notFollowedBy),
+    Parsec,
+    chunk,
+    sepBy1,
+    sepEndBy,
+    try,
+  )
 import Text.Megaparsec.Char
   ( alphaNumChar,
     hspace,
@@ -34,7 +41,7 @@ import Text.Megaparsec.Char
 type Parser = Parsec Void Text
 
 pDirective :: Text -> Parser ()
-pDirective d = chunk "#!" *> chunk d $> ()
+pDirective d = chunk "#!" *> hspace *> chunk d $> ()
 
 pValue :: Parser Text
 pValue = pack <$> some (alphaNumChar <|> punctuationChar <|> symbolChar)
@@ -50,8 +57,7 @@ pMagixDirective x = pDirectiveWithValue "magix" (chunk x) $> ()
 
 pLanguageDirectives :: Text -> Parser b -> ([b] -> a) -> Parser a
 pLanguageDirectives language pLanguageDirective combineDirectives = do
-  pMagixDirective language
-  space1
-  ds <- sepEndBy pLanguageDirective newline
+  pMagixDirective language <* hspace
+  ds <- (try newline *> sepEndBy pLanguageDirective newline) <|> pure []
   notFollowedBy $ chunk "#!"
   pure $ combineDirectives ds
