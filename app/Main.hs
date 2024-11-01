@@ -15,8 +15,9 @@ module Main
 where
 
 import Control.Exception (throwIO)
+import Data.ByteString (readFile)
 import Data.Text (unpack)
-import Data.Text.IO (readFile)
+import Data.Text.Encoding (decodeUtf8')
 import Magix.Build (BuildStatus (..), build, getBuildStatus, withBuildLock)
 import Magix.Config (Config, getConfig)
 import Magix.Directives (Directives, getDirectives)
@@ -80,13 +81,14 @@ main = do
 
   let p = scriptPath opts
   logD $ "Reading script at path " <> p
+  bs <- readFile opts.scriptPath
 
-  conf <- getConfig opts
+  conf <- getConfig opts bs
   logD $ "Magix configuration is " <> show conf
 
   logD "Parsing directives"
-  f <- readFile p
-  dirs <- case getDirectives p f of
+  txt <- either throwIO pure $ decodeUtf8' bs
+  dirs <- case getDirectives p txt of
     Left e -> logE "Failed parsing directives" >> throwIO e
     Right ds -> pure ds
   logD $ "Directives are " <> show dirs

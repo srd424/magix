@@ -57,12 +57,11 @@ getDefaultNixpkgsPathOrFail = do
       throwIO err
     Right np -> pure np
 
-getConfig :: Options -> IO Config
-getConfig o = do
+getConfig :: Options -> ByteString -> IO Config
+getConfig o x = do
   p' <- canonicalizePath p
   c <- maybe (getUserCacheDir "magix") canonicalizePath o.cachePath
   np <- maybe getDefaultNixpkgsPathOrFail canonicalizePath o.nixpkgsPath
-  x <- readFile o.scriptPath
   let nm = takeBaseName p
       ha = getMagixHash np x
       lo = getLockPath c ha nm
