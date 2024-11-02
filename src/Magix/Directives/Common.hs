@@ -26,8 +26,8 @@ import Text.Megaparsec
   ( MonadParsec (notFollowedBy),
     Parsec,
     chunk,
-    sepBy1,
     sepEndBy,
+    sepEndBy1,
   )
 import Text.Megaparsec.Char
   ( alphaNumChar,
@@ -49,7 +49,7 @@ pDirectiveWithValue :: Text -> Parser a -> Parser a
 pDirectiveWithValue d p = pDirective d *> hspace *> p
 
 pDirectiveWithValues :: Text -> Parser [Text]
-pDirectiveWithValues d = pDirectiveWithValue d (sepBy1 pValue hspace)
+pDirectiveWithValues d = pDirectiveWithValue d (sepEndBy1 pValue hspace)
 
 pMagixDirective :: Text -> Parser ()
 pMagixDirective x = pDirectiveWithValue "magix" (chunk x) $> ()

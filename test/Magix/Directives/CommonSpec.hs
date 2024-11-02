@@ -15,17 +15,23 @@ module Magix.Directives.CommonSpec
 where
 
 import Data.Either (isLeft)
-import Magix.Directives.Common (pDirectiveWithValues, pMagixDirective)
+import Magix.Directives.Common (pDirectiveWithValue, pDirectiveWithValues, pMagixDirective)
 import Test.Hspec (Spec, describe, it, shouldBe, shouldSatisfy)
-import Text.Megaparsec (parse)
+import Text.Megaparsec (chunk, parse)
 import Prelude hiding (readFile)
 
 spec :: Spec
 spec = do
+  describe "pDirectiveWithValue" $ do
+    it "parses directive with one value" $ do
+      parse (pDirectiveWithValue "foo" (chunk "bar")) "" "#!foo bar" `shouldBe` Right "bar"
+      parse (pDirectiveWithValue "foo" (chunk "bar")) "" "#! foo bar" `shouldSatisfy` isLeft
+
   describe "pDirectiveWithValues" $ do
     it "parses directives with one or more values" $ do
       parse (pDirectiveWithValues "foo") "" "#!foo bar" `shouldBe` Right ["bar"]
       parse (pDirectiveWithValues "foo") "" "#!foo bar baz" `shouldBe` Right ["bar", "baz"]
+
     it "fails on directives without a value" $ do
       parse (pDirectiveWithValues "foo") "" "#!foo " `shouldSatisfy` isLeft
       parse (pDirectiveWithValues "foo") "" "#!foo" `shouldSatisfy` isLeft
