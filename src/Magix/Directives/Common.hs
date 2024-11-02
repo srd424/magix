@@ -11,6 +11,7 @@
 -- Creation date: Fri Oct 18 09:17:40 2024.
 module Magix.Directives.Common
   ( Parser,
+    pDirectiveWithValue,
     pDirectiveWithValues,
     pMagixDirective,
     pLanguageDirectives,
@@ -27,21 +28,19 @@ import Text.Megaparsec
     chunk,
     sepBy1,
     sepEndBy,
-    try,
   )
 import Text.Megaparsec.Char
   ( alphaNumChar,
     hspace,
     newline,
     punctuationChar,
-    space1,
     symbolChar,
   )
 
 type Parser = Parsec Void Text
 
-pDirective :: Text -> Parser ()
-pDirective d = chunk "#!" *> hspace *> chunk d $> ()
+pDirective :: Text -> Parser Text
+pDirective d = chunk "#!" *> chunk d
 
 pValue :: Parser Text
 pValue = pack <$> some (alphaNumChar <|> punctuationChar <|> symbolChar)

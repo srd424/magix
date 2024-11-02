@@ -15,7 +15,6 @@ module Magix.Languages.Python.Directives
   )
 where
 
-import Data.Foldable (Foldable (..))
 import Data.Text (Text)
 import Magix.Directives.Common (Parser, pDirectiveWithValues, pLanguageDirectives)
 import Prelude hiding (readFile)
@@ -26,8 +25,5 @@ newtype PythonDirectives = PythonDirectives {_pythonPackages :: [Text]}
 pPythonPackages :: Parser PythonDirectives
 pPythonPackages = PythonDirectives <$> pDirectiveWithValues "pythonPackages"
 
-combinePythonPackages :: [PythonDirectives] -> PythonDirectives
-combinePythonPackages = foldl' (<>) mempty
-
 pPythonDirectives :: Parser PythonDirectives
-pPythonDirectives = pLanguageDirectives "python" pPythonPackages combinePythonPackages
+pPythonDirectives = pLanguageDirectives "python" pPythonPackages mconcat

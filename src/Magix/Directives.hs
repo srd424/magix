@@ -18,15 +18,14 @@ module Magix.Directives
   )
 where
 
-import Control.Applicative ((<|>))
 import Control.Exception (Exception)
 import Data.Bifunctor (Bifunctor (..))
 import Data.Text (Text)
-import Magix.Directives.Common (Parser)
-import Magix.Languages.Bash.Directives (BashDirectives (..), pBashDirectives)
-import Magix.Languages.Haskell.Directives (HaskellDirectives (..), pHaskellDirectives)
+import Magix.Directives.Common (Parser, pDirectiveWithValue)
+import Magix.Languages.Bash.Directives (BashDirectives, pBashDirectives)
+import Magix.Languages.Haskell.Directives (HaskellDirectives, pHaskellDirectives)
 import Magix.Languages.Python.Directives (PythonDirectives, pPythonDirectives)
-import Text.Megaparsec (MonadParsec (..), chunk, errorBundlePretty, parse)
+import Text.Megaparsec (MonadParsec (..), choice, chunk, errorBundlePretty, parse)
 import Text.Megaparsec.Char (space1)
 import Prelude hiding (readFile)
 
@@ -43,13 +42,15 @@ getLanguageName (Haskell _) = "Haskell"
 getLanguageName (Python _) = "Python"
 
 pShebang :: Parser Text
-pShebang = chunk "#!/usr/bin/env magix"
+pShebang = pDirectiveWithValue "/usr/bin/env" (chunk "magix")
 
 pLanguageSpecificDirectives :: Parser Directives
 pLanguageSpecificDirectives =
-  (Bash <$> try pBashDirectives)
-    <|> (Haskell <$> try pHaskellDirectives)
-    <|> (Python <$> pPythonDirectives)
+  choice
+    [ Bash <$> try pBashDirectives,
+      Haskell <$> try pHaskellDirectives,
+      Python <$> pPythonDirectives
+    ]
 
 pDirectives :: Parser Directives
 pDirectives = pShebang *> space1 *> pLanguageSpecificDirectives

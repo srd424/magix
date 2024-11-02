@@ -17,10 +17,8 @@ module Magix.Tools
 where
 
 import Control.Monad (replicateM)
-import Data.Bifunctor (Bifunctor (..))
 import Data.ByteString (ByteString, pack)
 import Data.Text (Text, isInfixOf, unwords)
-import Data.Word (Word8)
 import Magix.Config (Config (..))
 import Magix.Directives (Directives, getLanguageName)
 import Magix.Expression (getNixExpression, getReplacements, getTemplate)

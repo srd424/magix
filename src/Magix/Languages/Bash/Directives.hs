@@ -15,7 +15,6 @@ module Magix.Languages.Bash.Directives
   )
 where
 
-import Data.Foldable (Foldable (..))
 import Data.Text (Text)
 import Magix.Directives.Common (Parser, pDirectiveWithValues, pLanguageDirectives)
 import Prelude hiding (readFile)
@@ -26,8 +25,5 @@ newtype BashDirectives = BashDirectives {_runtimeInputs :: [Text]}
 pRuntimeInputs :: Parser BashDirectives
 pRuntimeInputs = BashDirectives <$> pDirectiveWithValues "runtimeInputs"
 
-combineRuntimeInputs :: [BashDirectives] -> BashDirectives
-combineRuntimeInputs = foldl' (<>) mempty
-
 pBashDirectives :: Parser BashDirectives
-pBashDirectives = pLanguageDirectives "bash" pRuntimeInputs combineRuntimeInputs
+pBashDirectives = pLanguageDirectives "bash" pRuntimeInputs mconcat

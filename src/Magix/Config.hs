@@ -16,7 +16,7 @@ module Magix.Config
 where
 
 import Control.Exception (throwIO)
-import Data.ByteString (ByteString, readFile)
+import Data.ByteString (ByteString)
 import Magix.Hash (getMagixHash)
 import Magix.NixpkgsPath (getDefaultNixpkgsPath)
 import Magix.Options (Options (..))
