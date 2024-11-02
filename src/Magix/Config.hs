@@ -64,11 +64,7 @@ getConfig o x = do
   np <- maybe getDefaultNixpkgsPathOrFail canonicalizePath o.nixpkgsPath
   let nm = takeBaseName p
       ha = getMagixHash np x
-      lo = getLockPath c ha nm
-      lp = getScriptLinkPath c ha nm
       bd = getBuildDir c ha nm
-      be = getBuildExprPath bd
-      rd = getResultLinkPath c ha nm
   pure $
     Config
       { scriptPath = p',
@@ -76,11 +72,11 @@ getConfig o x = do
         magixHash = ha,
         nixpkgsPath = np,
         cacheDir = c,
-        lockPath = lo,
-        scriptLinkPath = lp,
+        lockPath = getLockPath c ha nm,
+        scriptLinkPath = getScriptLinkPath c ha nm,
         buildDir = bd,
-        buildExprPath = be,
-        resultLinkPath = rd
+        buildExprPath = getBuildExprPath bd,
+        resultLinkPath = getResultLinkPath c ha nm
       }
   where
     p = o.scriptPath
