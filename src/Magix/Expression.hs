@@ -33,9 +33,6 @@ getTemplatePath languageName = "src/Magix/Languages/" <> languageName <> "/Templ
 getTemplate :: String -> IO Text
 getTemplate languageName = getDataFileName (getTemplatePath languageName) >>= readFile
 
-replace' :: Text -> (Text, Text) -> Text
-replace' t (x, y) = replace x y t
-
 getCommonReplacements :: Config -> [(Text, Text)]
 getCommonReplacements c =
   [ ("__SCRIPT_NAME__", pack $ scriptName c),
@@ -54,3 +51,5 @@ getNixExpression :: Config -> Directives -> IO Text
 getNixExpression c ds = do
   t <- getTemplate $ getLanguageName ds
   pure $ foldl' replace' t (getReplacements c ds)
+  where
+    replace' t (x, y) = replace x y t
