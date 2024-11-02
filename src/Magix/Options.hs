@@ -114,7 +114,7 @@ pScriptArgs =
       )
 
 desc :: String
-desc = "Build, cache and run possibly compiled scripts using the Nix package manager"
+desc = "Build, cache, and run possibly compiled scripts with dependencies using the Nix package manager"
 
 optionsParser :: ParserInfo Options
 optionsParser = info (helper <*> pOptions) (fullDesc <> progDesc desc)
