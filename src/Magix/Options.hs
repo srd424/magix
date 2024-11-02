@@ -67,7 +67,7 @@ pLogLevel =
     Debug
     ( long "verbose"
         <> short 'v'
-        <> help "Print debugging messages"
+        <> help "Print debug messages"
     )
 
 pForceBuild :: Parser Rebuild
@@ -114,7 +114,7 @@ pScriptArgs =
       )
 
 desc :: String
-desc = "Run and cache compiled scripts using the Nix package manager"
+desc = "Build, cache and run possibly compiled scripts using the Nix package manager"
 
 optionsParser :: ParserInfo Options
 optionsParser = info (helper <*> pOptions) (fullDesc <> progDesc desc)
