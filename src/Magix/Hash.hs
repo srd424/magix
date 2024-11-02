@@ -15,12 +15,15 @@ module Magix.Hash
 where
 
 import Crypto.Hash.SHA256 (finalize, init, update)
-import Data.ByteString (ByteString)
+import Data.ByteString (ByteString, toStrict)
+import Data.ByteString.Builder (Builder, charUtf8, intDec, toLazyByteString)
 import Data.Foldable (Foldable (..))
-import Data.Text (pack)
-import Data.Text.Encoding (encodeUtf8)
+import Data.Version (Version (versionBranch))
 import Paths_magix (version)
 import Prelude hiding (init)
+
+toByteStringWith :: (a -> Builder) -> [a] -> ByteString
+toByteStringWith f = toStrict . toLazyByteString . mconcat . map f
 
 getMagixHash :: FilePath -> ByteString -> ByteString
 getMagixHash nixpkgsPath scriptContents =
@@ -28,7 +31,7 @@ getMagixHash nixpkgsPath scriptContents =
     foldl'
       update
       init
-      [ encodeUtf8 $ pack nixpkgsPath,
-        encodeUtf8 $ pack $ show version,
+      [ toByteStringWith charUtf8 nixpkgsPath,
+        toByteStringWith intDec $ versionBranch version,
         scriptContents
       ]
