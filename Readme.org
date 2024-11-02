@@ -5,6 +5,46 @@ package manager.
 - Magix is simple and stupid.
 - Magix is a tiny wrapper around =nix-build=.
 
+* Supported languages
+** Bash
+#+name: BashExample
+#+begin_src sh :exports code
+#!/usr/bin/env magix
+#!magix bash
+#!runtimeInputs jq
+
+jq --help
+#+end_src
+
+** Haskell
+#+name: HaskellExample
+#+begin_src haskell :session ghci :exports code :results none
+#!/usr/bin/env magix
+#!magix haskell
+#!haskellPackages bytestring
+#!ghcFlags -threaded
+
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.ByteString qualified as BS
+
+main :: IO ()
+main = BS.putStr "Hello, World!\n"
+#+end_src
+
+** Python
+#+name: PythonExample
+#+begin_src python :exports code :results none
+#!/usr/bin/env magix
+#!magix python
+#!pythonPackages numpy
+
+from numpy import array
+
+xs = array([1,2,3])
+print(xs)
+#+end_src
+
 * Next steps
 - Property-based testing (e.g., generate arbitrary directives or even scripts).
   When creating arbitrary directives, one could test if the resulting
