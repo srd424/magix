@@ -1,6 +1,6 @@
 * Magix
-Build, cache, and run possibly compiled scripts with dependencies using the Nix
-package manager.
+Build, cache, and run possibly compiled scripts with dependencies using the [[https://nixos.org/][Nix
+package manager]].
 
 - Magix is simple and stupid.
 - Magix is a tiny wrapper around =nix-build=.
@@ -45,9 +45,64 @@ xs = array([1,2,3])
 print(xs)
 #+end_src
 
+* Try
+Try Magix without installation on a Bash script called [[file:test-scripts/bash/empty][=empty=]]
+#+name: Try
+#+begin_src sh :exports both :results verbatim
+  wget https://github.com/dschrempf/magix/raw/refs/heads/main/test-scripts/bash/empty
+  nix run github:dschrempf/magix#magix empty
+#+end_src
+
+#+RESULTS: Try
+: empty
+
+* Use
+Install Magix, and, for example, run the [[file:test-scripts/bash/args][=args= test script for Bash]]
+#+name: Run
+#+begin_src sh :exports both :results verbatim
+  ./test-scripts/bash/args one two three -h
+#+end_src
+
+#+RESULTS: Run
+: Command basename is: args
+: Command line arguments are: one two three -h
+
+* Get help
+#+name: Help
+#+begin_src sh :exports both :results verbatim
+  magix -h
+#+end_src
+
+#+RESULTS: Help
+#+begin_example
+Usage: magix [-v|--verbose] [-f|--force-build] [-c|--cache-path CACHE_PATH]
+             [-n|--nixpkgs-path NIXPKGS_PATH] SCRIPT_FILE_PATH [SCRIPT_ARGS]
+
+  Build, cache, and run possibly compiled scripts with dependencies using the
+  Nix package manager
+
+Available options:
+  -h,--help                Show this help text
+  -v,--verbose             Print debug messages
+  -f,--force-build         Force build, even when cached build exists
+  -c,--cache-path CACHE_PATH
+                           Path of cache directory to use for builds (default:
+                           '$XDG_CACHE_HOME/magix')
+  -n,--nixpkgs-path NIXPKGS_PATH
+                           Path of Nixpkgs repository to use (default: extracted
+                           from '$NIX_PATH')
+  SCRIPT_FILE_PATH         File path of script to build, cache and run
+  SCRIPT_ARGS              Arguments passed on to the script
+#+end_example
+
 * Next steps
 - Property-based testing (e.g., generate arbitrary directives or even scripts).
   When creating arbitrary directives, one could test if the resulting
   Nix expressions are syntactically correct.
 - We create random caches and hashes during tests. We could write an Arbitrary
   instance for =Config= to simplify this process.
+- CICD pipeline.
+
+* Nix-script
+Magix was heavily inspired by [[https://github.com/BrianHicks/nix-script][nix-script]], which [[https://github.com/dschrempf/nix-script][I also maintain]]. However, my
+Rust is a bit rusty, and I wanted a simpler solution.
