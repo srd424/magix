@@ -117,7 +117,10 @@ desc :: String
 desc = "Build, cache, and run possibly compiled scripts with dependencies using the Nix package manager"
 
 optionsParser :: ParserInfo Options
-optionsParser = info (helper <*> pOptions) (fullDesc <> progDesc desc)
+optionsParser =
+  info
+    (helper <*> pOptions)
+    (fullDesc <> progDesc desc)
 
 getOptions :: IO Options
 getOptions = execParser (optionsParser {infoPolicy = NoIntersperse})
