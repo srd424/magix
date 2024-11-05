@@ -102,7 +102,12 @@ Available options:
 - We create random caches and hashes during tests. We could write an Arbitrary
   instance for =Config= to simplify this process.
 - CICD pipeline.
-- Benchmark and profile.
+
+* Notes about performance
+I have performed basic benchmarks and have recorded some profiles. When a script
+is cached, *Magix has a runtime cost of around 20ms*.
+
+The runtime cost depends on the used language because the wrappers differ.
 
 * Nix-script
 Magix was heavily inspired by [[https://github.com/BrianHicks/nix-script][nix-script]], which [[https://github.com/dschrempf/nix-script][I also maintain]]. However, my
