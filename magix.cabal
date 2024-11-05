@@ -50,9 +50,7 @@ common bench
 
 common exec
   default-language: GHC2021
-  ghc-options:
-    -Wall -Werror -Wunused-packages -Wredundant-constraints -threaded
-    -rtsopts -with-rtsopts=-N
+  ghc-options:      -Wall -Werror -Wunused-packages -Wredundant-constraints
 
 library
   import:          common, lib
