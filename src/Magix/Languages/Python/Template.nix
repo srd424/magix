@@ -4,10 +4,10 @@
 
 let
   pythonEnv = pkgs.python3.withPackages (ps: with ps; [ __PYTHON_PACKAGES__ ]);
-  scriptWithOriginalName = pkgs.writeScript "replace-command-name" ''
-    import sys
-    sys.argv[0] = "__SCRIPT_NAME__"
-    exec(open("__SCRIPT_SOURCE__").read())
+  scriptWithOriginalName = pkgs.writeScript "replace-command-name-wrapper" ''
+    from sys import argv
+    argv[0] = "__SCRIPT_NAME__"
+    exec(open("${__SCRIPT_SOURCE__}").read())
   '';
 in
 pkgs.writeShellApplication {
